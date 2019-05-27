@@ -692,5 +692,5 @@ From (
     happypath.to_excel('./excel_results/HappyPath.xlsx')
     addlien = combined_df[combined_df['LF_Label'] == 'Add Lien']
     addlien.to_excel('./excel_results/NewLiens.xlsx')
-    combined_df.to_excel('Full_Analysis.xlsx', index = False)
+    combined_df.to_excel('./excel_results/Full_Analysis.xlsx', index = False)
     print('SQL code has completed, on to updates!')
