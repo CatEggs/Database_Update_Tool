@@ -1,0 +1,4 @@
+# Don't commit files listed in this folder
+
+config.py
+__pycache__/
