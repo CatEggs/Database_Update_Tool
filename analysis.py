@@ -21,7 +21,6 @@ def col_1():
     # create engine, make connection to reporting DB
       
     sql_connect = "mssql+pyodbc://" + config.username + ":" + config.password + "@" + config.local + "?driver=SQL+Server+Native+Client+11.0"
-    print(sql_connect)
     engine = create_engine(sql_connect)
 
     # import S3Reporting MetaData
@@ -687,11 +686,11 @@ From (
                 combined_df.loc[index, 'LF_Label'] = row['CMS_Label']
 
     # Pull original LF analysis, Happy path and Combined Analysis into spreadsheet for col2.py 
-    lf_df.to_excel('LF.xlsx')
-    cms_df.to_excel('CMS.xlsx')
+    lf_df.to_excel('./excel_results/LF.xlsx')
+    cms_df.to_excel('./excel_results/CMS.xlsx')
     happypath = combined_df[combined_df['LF_Label'] == 'Happy Path']
-    happypath.to_excel('HappyPath.xlsx')
+    happypath.to_excel('./excel_results/HappyPath.xlsx')
     addlien = combined_df[combined_df['LF_Label'] == 'Add Lien']
-    addlien.to_excel('NewLiens.xlsx')
+    addlien.to_excel('./excel_results/NewLiens.xlsx')
     combined_df.to_excel('Full_Analysis.xlsx', index = False)
     print('SQL code has completed, on to updates!')

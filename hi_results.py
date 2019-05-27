@@ -14,9 +14,9 @@ def col_3(path):
     # Then export them into different tabbs of a workbook
 
     # import spreadsheets
-    lf_df = pd.read_excel(r'LF.xlsx') 
-    cms_df = pd.read_excel(r'CMS.xlsx')
-    combined_df = pd.read_excel(r'Full_Analysis.xlsx')
+    lf_df = pd.read_excel(r'./excel_results/LF.xlsx') 
+    cms_df = pd.read_excel(r'./excel_results/CMS.xlsx')
+    combined_df = pd.read_excel(r'./excel_results/Full_Analysis.xlsx')
 
     # seperate each label into its own df
     hi_cm = combined_df[combined_df['LF_Label'] == 'Human Intervention (CM)']

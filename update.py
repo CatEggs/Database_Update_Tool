@@ -14,10 +14,10 @@ import glob
 
 def col_2(path, filename):
 
-    lf_df = pd.read_excel(r'LF.xlsx')
-    combined_df = pd.read_excel(r'Full_Analysis.xlsx')
-    happypath = pd.read_excel(r'HappyPath.xlsx')
-    addliens = pd.read_excel(r'NewLiens.xlsx')
+    lf_df = pd.read_excel(r'./excel_results/LF.xlsx')
+    combined_df = pd.read_excel(r'./excel_results/Full_Analysis.xlsx')
+    happypath = pd.read_excel(r'./excel_results/HappyPath.xlsx')
+    addliens = pd.read_excel(r'./excel_results/NewLiens.xlsx')
 
     # Get all happy path claim ref for lf
     hp_id_lf = set(np.asarray(happypath['Claim Ref #']))
@@ -62,6 +62,7 @@ def col_2(path, filename):
     wb = load_workbook(full_path)
     ud.add_ws(full_path, wb, lf, 'LF', 0)
     ud.add_ws(full_path, wb, final_cms, 'CMS', 8)
+    print('Updates are complete, now for human intervention results!')
 
 
 
