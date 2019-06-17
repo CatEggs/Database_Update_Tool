@@ -109,32 +109,28 @@ def export(df1, filename, path):
                 for i in range(0, len(case_list)):
                         i_name = case_list[i]
                         hi = casename.get_group(i_name)
-                        hi.to_excel(path + filename + i_name + ".xlsx", sheet_name = 'Analysis', header = True, index = False)
+                        df_lf = hi[['FirstName',	'LastName',	'Claim Ref #',	'COL Claim Number',	'COL Attorney',	'COL Case Name',	'COL Payment Group',	'Claim Status',	'S3 Client Id',	'SLAM ThirdPartyId',	'SLAM CaseName',	'SLAM CaseId',	'Claimant in SLAM correctly?',	'Current Escrow',	'Claimant on CSR?',	'Escrow Analysis',	'#Problems',	'Bad List Note',	'#Prob Notes',	'Misc. Issues',	'COL SA',	'SLAM SA',	'SA Matches?',	'COL SSN',	'SLAM SSN',	'SSN Matches?',	'SSN Research',	'Final (SLAM Summary)',	'SLAM Finalized Status Id',	'Truly Final/FinalizedStatusId Issue?',	'SLAM Client Funded',	'Completed by GRG HB Report?',	'Updated SLAM Final',	'SLAM Quest Recd',	'Electronic Release Date',	'Paper Release Date',	'Updated Release Date',	'Release Returned?',	'Rules for Q2, Q4, Questionnaire, Release',	'Should we update?',	'COL Mcare',	'COL Non PLRP',	'COL Mcaid',	'COL Third Party',	'COL PLRP',	'SLAM Mcare',	'SLAM Non PLRP',	'SLAM Mcaid',	'SLAM Third Party',	'SLAM PLRP',	'Update Questions?',	'Updated Mcare',	'Updated Non PLRP',	'Updated Mcaid',	'Updated Third Party',	'Updated PLRP',	'COL HB',	'SLAM HB',	'Update HB?',	'SLAM HB/Updated HB',	'Initial_LF_Label',	'LF_Label']]
+                        df_lf_dedupe = pd.DataFrame.drop_duplicates(df_lf)
+                        df_cms = hi[['COL LienId',	'COL LienType',	'COL Question #',	'COL Status',	'COL Amount',	'COL Lienholder',	'COL Id',	'COL Claim number',	'COL CaseName',	'ThirdPartyId',	'SLAM LienId',	'SLAM LienType',	'SLAM Question #',	'SLAM Status',	'SLAM Amount',	'SLAM Lienholder',	'ThirdPartyId_Match?',	'Null_Liens',	'Status_Check',	'LienType_Check',	'LienId_Check',	'Amount_Check',	'Question_#_Check',	'Lienholder_Check',	'InSLAM_Check',	'Initial_CMS_Label',	'CMS_Label']]
+                        with pd.ExcelWriter(path + filename + i_name + ".xlsx") as writer:
+                                df_lf_dedupe.to_excel(writer, sheet_name = 'LF', index = False)
+                                df_cms.to_excel(writer, sheet_name = 'CMS', index = False)
 
-def test_export(df1, df2, filename, path):
+
+def t_export(df1, filename, path):
         
-        lf_casename = df1.groupby('COL Case Name')
-        cms_casename = df2.groupby('COL CaseName')
+        casename = df1.groupby('COL Case Name')
         #print(casename)
-        df1_case_list = list(lf_casename.groups.keys())
-        df2_case_list = list(cms_casename.groups.keys())
+        case_list = list(casename.groups.keys())
         #print(case_list)
         i = 0
-        #for lf_case, cms_case in itertools.izip_longest(df1_case_list, df2_case_list):
-        if not df1_case_list:
+        if not case_list:
                 pass
-        else: 
-                for i in range(0, len(df1_case_list)):
-                        i_name_lf = df1_case_list[i]
-                        hi = lf_casename.get_group(i_name_lf)
-                        hi.to_excel(path + filename + i_name_lf  + "_LF.xlsx", sheet_name = 'LF Analysis', header = True, index = False)
-        if not df2_case_list:
-                pass
-        else: 
-                for i in range(0, len(df2_case_list)):
-                        i_name_cms = df2_case_list[i]
-                        hi = cms_casename.get_group(i_name_cms)
-                        hi.to_excel(path + filename + i_name_cms + "_CMS.xlsx", sheet_name = 'CMS Analysis', header = True, index = False)
+        else:
+                for i in range(0, len(case_list)):
+                        i_name = case_list[i]
+                        hi = casename.get_group(i_name)
+                        hi.to_excel(path + filename + i_name + ".xlsx", sheet_name = 'Analysis', header = True, index = False)
 
 def add_liens(cms, version, addliens):
         orig_cn = version.iloc[0]['Firm']

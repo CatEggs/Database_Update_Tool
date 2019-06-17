@@ -495,6 +495,7 @@ From (
 					When [COL LienType] like 'Attorney' then 'DNE'
 					When [COL LienType] like 'Litigation Finance' then 'DNE'
 					When [COL LienType] like 'Other' then 'Look Into'
+                    When [SLAM LienType] like 'Look Into' then 'Look Into'
 					When [COL LienType] is null and ([SLAM LienType] is not null) and ([COL LienId] = [SLAM LienId]) then 'Update'
 					When [COL LienType]<>[SLAM LienType] and ([COL LienId] = [SLAM LienId]) then 'Update'
 					When [COL LienType] = [SLAM LienType] and ([COL LienId] = [SLAM LienId]) then 'Good'
