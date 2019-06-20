@@ -630,7 +630,11 @@ From (
     )
 
     # merge dataframes to compare, rename columns
+    lf_df['Claim Ref #']=lf_df['Claim Ref #'].astype(int)
+    cms_df['Claim Ref #']=cms_df['Claim Ref #'].astype(int)
     combined_df = pd.merge(lf_df, cms_df, on = 'Claim Ref #')
+    
+    print("I hope this work")
     #combined_df = combined_df.rename(columns={"LF_Initial_Label": "LF_Label", "CMS_Initial_Label": "CMS_Label"})
 
     #Pull Labels from both df into a combined df. Set labels based off matrix
