@@ -54,6 +54,10 @@ def col_3(path):
 
     # export into worksheet and put a filename into it
     try:
+        ud.export(combined_df, "Full_Analysis QA - ", path)
+    except UnboundLocalError:
+        pass
+    try:
         ud.export(hi_cm, "Human_Intervention_CM - ", path)
     except UnboundLocalError:
         pass

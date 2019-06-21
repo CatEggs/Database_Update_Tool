@@ -1,16 +1,16 @@
 # excel libraries
 import pandas as pd
 from openpyxl import load_workbook
-import xlsxwriter
+#import xlsxwriter
 import numpy as np
-import xlrd
+#import xlrd
 
 # my libraries
 import updatelib as ud
 
 # os
-import os, os.path
-import glob
+#import os, os.path
+#import glob
 
 def col_2(path, filename):
 
@@ -23,7 +23,6 @@ def col_2(path, filename):
     hp_id_lf = set(np.asarray(happypath['Claim Ref #']))
     hp_id_cms = np.asarray(happypath['COL Id'])
     al_id_cms = set(np.asarray(addliens['Claim Ref #']))
-    ##Need to create a script that takes into account duplicate liens for happypath
 
     #### Happy Path Update ####
 
@@ -48,7 +47,6 @@ def col_2(path, filename):
    
     # Update the original bulk edit with happy path info for CMS tab
     ud.update_df(cms, combined_df, hp_id_cms, 'Status', 'SLAM Status','Id', 'COL Id')
-    #ud.update_df(cms, combined_df, hp_id_cms, 'Amount', 'SLAM Amount', 'Amount', 'SLAM Amount', 'Id', 'COL Id')
     ud.update_df(cms, combined_df, hp_id_cms, 'Lien type', 'SLAM LienType','Id', 'COL Id')
     ud.update_df(cms, combined_df, hp_id_cms, 'Lien holder', 'SLAM Lienholder','Id', 'COL Id')
     ud.update_dups(cms, combined_df, hp_id_cms,  'Amount', 'Question number',  'SLAM Amount', 'SLAM Question #', 'Id', 'COL Id')
@@ -62,7 +60,7 @@ def col_2(path, filename):
     wb = load_workbook(full_path)
     ud.add_ws(full_path, wb, lf, 'LF', 0)
     ud.add_ws(full_path, wb, final_cms, 'CMS', 8)
-    print('Updates are complete, now for human intervention results!')
+    #print('Updates are complete, now for human intervention results!')
 
 
 
