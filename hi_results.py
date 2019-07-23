@@ -15,23 +15,28 @@ def col_3(path):
 
     # import spreadsheets
     combined_df = pd.read_excel(r'./excel_results/Full_Analysis.xlsx')
-
+    hp_df = pd.read_excel(r'./excel_results/HappyPath.xlsx')
     # seperate each label into its own df
     df_hi = combined_df.groupby('LF_Label')
+    df_hp = hp_df.groupby('LF_Label')
+    try:
+        happy_path = df_hp.get_group('Happy Path')
+    except KeyError:
+        pass
     try:
         hi_cm = df_hi.get_group('Human Intervention (CM)')
     except KeyError:
         pass
     try:
-        hi_level1 = df_hi.get_group('Human Intervention (fix this week)')
+        hi_level1 = df_hi.get_group('Human Intervention - Fix this week')
     except KeyError:
         pass
     try:
-        hi_level2 = df_hi.get_group('Human Intervention (fix this week if time)')
+        hi_level2 = df_hi.get_group('Human Intervention - Fix this week (if time)')
     except KeyError:
         pass
     try:
-        hi_level3 = df_hi.get_group('Human Intervention (fix when you can)')
+        hi_level3 = df_hi.get_group('Human Intervention - Fix when you can')
     except KeyError:
         pass
     try:
@@ -53,6 +58,10 @@ def col_3(path):
  
 
     # export into worksheet and put a filename into it
+    try:
+        ud.export(happy_path, "Happy Path - ", path)
+    except UnboundLocalError:
+        pass
     try:
         ud.export(combined_df, "Full_Analysis QA - ", path)
     except UnboundLocalError:

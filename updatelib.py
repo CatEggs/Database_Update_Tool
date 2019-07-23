@@ -8,6 +8,23 @@ def make_copy(path, filename):
         obe = op.load_workbook(path + filename)
         obe.save(path + 'OBE_' + filename)
 
+def matrix_finalupdate(id_list, df, id1 ,col, label_value):
+        for id in id_list:
+                row_index = df.index[df[id1] == id]
+                df.at[row_index, col] = label_value
+
+def list_intersections(list1, list2, inter_list, df, id1, col1, col2, label_value):
+        # takes in a list of ids and checks to see if the id is in a list of intersecting ids(ids found in 2 seperate groups)
+        # then updates all the values associated with that id by the inputted label value
+        ### Delete list2 argument, does nothing ###
+        for id in list1:
+                if id in inter_list:
+                        row_index = df.index[df[id1] == id]
+                        df.at[row_index, col1] = label_value
+                        df.at[row_index, col2] = label_value
+                else:
+                        pass
+
 def update_df(df1, df2, id_lst, col1, col2,id1, id2):
         # takes in 2 df and the list of ids form the happypath df 
         # as well as the name of the column that you want to update, and the column name that will be used to do the updates
@@ -25,10 +42,10 @@ def update_df(df1, df2, id_lst, col1, col2,id1, id2):
                         row_index = df1.index[df1[id1] == id]
                         # print(row_index)
                         # using the index(or lien id), the 1st df value is replaced by the one found in the df2_columnval 
-                        df1.loc[row_index, col1] = df2_columnval
+                        df1.at[row_index, col1] = df2_columnval
 
 def update_dups(df1, df2, id_lst, col1, col2, col3, col4, id1, id2):
-        # takes in 2 df and the list of ids form the happypath df 
+        # takes in 2 df and the list of ids from the happypath df 
         # as well as the name of the columns that you want to update, and the column names that will be used to do the updates
         
         for id in id_lst:
@@ -39,8 +56,8 @@ def update_dups(df1, df2, id_lst, col1, col2, col3, col4, id1, id2):
                         #print(str(id) + " is duplicate garbage")
                         df2_columnval_amt = 0
                         row_index = df1.index[df1[id1] == id]
-                        df1.loc[row_index, col1] = df2_columnval_amt
-                        df1.loc[row_index, col2] = df2_columnval_qnum
+                        df1.at[row_index, col1] = df2_columnval_amt
+                        df1.at[row_index, col2] = df2_columnval_qnum
                 else:
                         #print(id)
                         row_index = df1.index[df1[id1] == id]
@@ -59,7 +76,7 @@ def update_label(df1,id_lst, id1, col1, str_label):
         else:                
                 for id in id_lst:
                         row_index = df1.index[df1[id1] == id]
-                        df1.loc[row_index, col1] = str_label
+                        df1.at[row_index, col1] = str_label
                 return(df1)
 
 def move_sheet(wb, from_loc = None, to_loc = None):
@@ -111,10 +128,11 @@ def export(df1, filename, path):
                         hi = casename.get_group(i_name)
                         df_lf = hi[['FirstName',	'LastName',	'Claim Ref #',	'COL Claim Number',	'COL Attorney',	'COL Case Name',	'COL Payment Group',	'Claim Status',	'S3 Client Id',	'SLAM ThirdPartyId',	'SLAM CaseName',	'SLAM CaseId',	'Claimant in SLAM correctly?',	'Current Escrow',	'Claimant on CSR?',	'Escrow Analysis',	'#Problems',	'Bad List Note',	'#Prob Notes',	'Misc. Issues',	'COL SA',	'SLAM SA',	'SA Matches?',	'COL SSN',	'SLAM SSN',	'SSN Matches?',	'SSN Research',	'Final (SLAM Summary)',	'SLAM Finalized Status Id',	'Truly Final/FinalizedStatusId Issue?',	'SLAM Client Funded',	'Completed by GRG HB Report?',	'Updated SLAM Final',	'SLAM Quest Recd',	'Electronic Release Date',	'Paper Release Date',	'Updated Release Date',	'Release Returned?',	'Rules for Q2, Q4, Questionnaire, Release',	'Should we update?',	'COL Mcare',	'COL Non PLRP',	'COL Mcaid',	'COL Third Party',	'COL PLRP',	'SLAM Mcare',	'SLAM Non PLRP',	'SLAM Mcaid',	'SLAM Third Party',	'SLAM PLRP',	'Update Questions?',	'Updated Mcare',	'Updated Non PLRP',	'Updated Mcaid',	'Updated Third Party',	'Updated PLRP',	'COL HB',	'SLAM HB',	'Update HB?',	'SLAM HB/Updated HB',	'Initial_LF_Label',	'LF_Label']]
                         df_lf_dedupe = pd.DataFrame.drop_duplicates(df_lf)
-                        df_cms = hi[['Claim Ref #', 'COL LienId',	'COL LienType',	'COL Question #',	'COL Status',	'COL Amount',	'COL Lienholder',	'COL Id',	'COL Claim number',	'COL CaseName',	'ThirdPartyId',	'SLAM LienId',	'SLAM LienType',	'SLAM Question #',	'SLAM Status',	'SLAM Amount',	'SLAM Lienholder',	'SLAM Stage',	'SLAM ClosedReason',	'SLAM OnBenefits',	'ThirdPartyId_Match?',	'Null_Liens',	'Status_Check',	'LienType_Check',	'LienId_Check',	'Amount_Check',	'Question_#_Check',	'Lienholder_Check',	'InSLAM_Check',	'Initial_CMS_Label',	'CMS_Label']]
+                        df_cms = hi[['Claim Ref #',	'COL LienId',	'COL LienType',	'COL Question #',	'COL Status',	'COL Amount',	'COL Lienholder',	'COL Id',	'COL Claim number',	'COL CaseName',	'ThirdPartyId',	'SLAM LienId',	'SLAM LienType',	'SLAM Question #',	'SLAM Status',	'SLAM Amount',	'SLAM Lienholder',	'SLAM LienType (converted)',	'SLAM Stage',	'SLAM ClosedReason',	'SLAM OnBenefits',	'ThirdPartyId_Match?',	'New Liens?',	'Status_Check',	'Updated Status',	'LienType_Check',	'LienId_Check',	'Amount_Check',	'Updated Amount',	'Question_#_Check',	'Lienholder_Check',	'InSLAM_Check',	'Initial_CMS_Label',	'CMS_Label']]
+                        df_cms_dedupe = pd.DataFrame.drop_duplicates(df_cms)
                         with pd.ExcelWriter(path + filename + i_name + ".xlsx") as writer:
                                 df_lf_dedupe.to_excel(writer, sheet_name = 'LF', index = False)
-                                df_cms.to_excel(writer, sheet_name = 'CMS', index = False)
+                                df_cms_dedupe.to_excel(writer, sheet_name = 'CMS', index = False)
 
 
 def t_export(df1, filename, path):
@@ -137,9 +155,8 @@ def add_liens(cms, version, addliens):
         #print(orig_cn)
         newliens = addliens[addliens['COL CaseName'] == str(orig_cn)] 
         newliens.head()
-        newliens_df = newliens.rename(columns = {"Claim Ref #": "Claim Ref #", "SLAM Status": "Status", "SLAM Amount": "Amount", "SLAM LienType": "Lien type", "SLAM Lienholder":"Lien holder", "SLAM Question #": "Question number", "SLAM LienId": "Lien Id"})
+        newliens_df = newliens.rename(columns = {"Claim Ref #": "Claim Ref #", "SLAM Status": "Status", "SLAM Amount": "Amount", "SLAM LienType (converted)": "Lien type", "SLAM Lienholder":"Lien holder", "SLAM Question #": "Question number", "SLAM LienId": "Lien Id"})
         #print(newliens_df)
         full_added_df = pd.concat([cms, newliens_df], sort=False, ignore_index=True)
-        final_cms_df = full_added_df.drop(columns = ['Unnamed: 0','FirstName','LastName','COL Claim Number','COL Attorney','COL Case Name','COL CaseName','COL Payment Group',	'Claim Status',	'S3 Client Id',	'SLAM ThirdPartyId','SLAM CaseName','SLAM CaseId','Claimant in SLAM correctly?','Current Escrow','Claimant on CSR?','Escrow Analysis','#Problems','Bad List Note','#Prob Notes','Misc. Issues',	'COL SA','SLAM SA','SA Matches?','COL SSN','SLAM SSN','SSN Matches?','SSN Research','Final (SLAM Summary)','SLAM Finalized Status Id','Truly Final/FinalizedStatusId Issue?',	'SLAM Client Funded',	'Completed by GRG HB Report?',	'Updated SLAM Final',	'SLAM Quest Recd','Electronic Release Date','Paper Release Date',	'Updated Release Date',	'Release Returned?',	'Rules for Q2, Q4, Questionnaire, Release',	'Should we update?',	'COL Mcare',	'COL Non PLRP',	'COL Mcaid',	'COL Third Party',	'COL PLRP',	'SLAM Mcare',	'SLAM Non PLRP',	'SLAM Mcaid',	'SLAM Third Party',	'SLAM PLRP',	'Update Questions?',	'Updated Mcare',	'Updated Non PLRP',	'Updated Mcaid',	'Updated Third Party',	'Updated PLRP',	'COL HB',	'SLAM HB',	'Update HB?',	'SLAM HB/Updated HB',	'LF_Label','COL LienId','COL LienType',	'COL Question #','COL Status','COL Amount','COL Lienholder','COL Id','COL Claim number','ThirdPartyId',	'ThirdPartyId_Match?','Null_Liens','Status_Check','LienType_Check','LienId_Check','Amount_Check','Question_#_Check','Lienholder_Check',	'InSLAM_Check',	'CMS_Label',
-        ])
+        final_cms_df = full_added_df.drop(columns = ['Unnamed: 0', 'FirstName',	'LastName', 'COL Claim Number',	'COL Attorney',	'COL Case Name','COL Payment Group',	'Claim Status',	'S3 Client Id',	'SLAM ThirdPartyId',	'SLAM CaseName',	'SLAM CaseId',	'SLAM Stage', 'Claimant in SLAM correctly?',	'Current Escrow',	'Claimant on CSR?',	'Escrow Analysis',	'#Problems',	'Bad List Note',	'#Prob Notes',	'Misc. Issues',	'COL SA',	'SLAM SA',	'SA Matches?',	'COL SSN',	'SLAM SSN',	'SSN Matches?',	'SSN Research',	'Final (SLAM Summary)',	'SLAM Finalized Status Id',	'Truly Final/FinalizedStatusId Issue?',	'SLAM Client Funded',	'Completed by GRG HB Report?',	'Updated SLAM Final',	'SLAM Quest Recd',	'Electronic Release Date',	'Paper Release Date',	'Updated Release Date',	'Release Returned?',	'Rules for Q2, Q4, Questionnaire, Release',	'Should we update?',	'COL Mcare',	'COL Non PLRP',	'COL Mcaid',	'COL Third Party',	'COL PLRP',	'SLAM Mcare',	'SLAM Non PLRP',	'SLAM Mcaid',	'SLAM Third Party',	'SLAM PLRP',	'Update Questions?',	'Updated Mcare',	'Updated Non PLRP',	'Updated Mcaid',	'Updated Third Party',	'Updated PLRP',	'COL HB',	'SLAM HB',	'Update HB?',	'SLAM HB/Updated HB',	'Initial_LF_Label',	'LF_Label',	'COL LienId',	'COL LienType',	'COL Question #',	'COL Status',	'COL Amount',	'COL Lienholder',	'COL Id',	'COL Claim number',	'COL CaseName',	'ThirdPartyId',	'SLAM LienType',	'SLAM ClosedReason',	'SLAM OnBenefits',	'ThirdPartyId_Match?',	'New Liens?',	'Status_Check',	'Updated Status',	'LienType_Check',	'LienId_Check',	'Amount_Check',	'Updated Amount',	'Question_#_Check',	'Lienholder_Check',	'InSLAM_Check',	'Initial_CMS_Label',	'CMS_Label'])
         return(final_cms_df)
