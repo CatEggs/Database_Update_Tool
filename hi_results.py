@@ -11,7 +11,7 @@ import updatelib as ud
 def col_3(path):
     ### Human Intervention ###
     # Takes in all 3 spreadsheets for update. Will use the combined spreadsheet to update the labels for the CMS and LF tab 
-    # Then export them into different tabbs of a workbook
+    # Then export them into different tabs of a workbook
 
     # import spreadsheets
     combined_df = pd.read_excel(r'./excel_results/Full_Analysis.xlsx')
@@ -44,7 +44,7 @@ def col_3(path):
     except KeyError:
         pass
     try:
-        no_change = df_hi.get_group('No Changes, No Issues')
+        no_change = df_hi.get_group('No change, no issue')
     except KeyError:
         pass
     try:

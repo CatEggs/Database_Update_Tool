@@ -12,12 +12,20 @@ def col_2(path, filename):
     combined_df = pd.read_excel(r'./excel_results/Full_Analysis.xlsx')
     happypath = pd.read_excel(r'./excel_results/HappyPath.xlsx')
     addliens = pd.read_excel(r'./excel_results/NewLiens.xlsx')
+    null_colid = pd.isnull(addliens['COL Id'])
+    addlien_null_colid = addliens[null_colid]
+
 
     # Get all happy path claim ref ids for cms and lf tab
-    hp_id_lf = set(np.asarray(happypath['Claim Ref #']))
-    hp_id_cms = np.asarray(happypath['COL Id'])
-    al_id_cms = set(np.asarray(addliens['Claim Ref #']))
-
+    hp_id_lf_initial = set(np.asarray(happypath['Claim Ref #']))
+    hp_id_cms_initial = np.asarray(happypath['COL Id'])
+    al_id_lf = set(np.asarray(addliens['Claim Ref #']))
+    al_id_cms = set(np.asarray(addliens['COL Id']))
+    al_lienid = set(np.asarray(addlien_null_colid['SLAM LienId']))
+    hp_id_lf = set().union(hp_id_lf_initial,al_id_lf)
+    hp_id_cms = set().union(hp_id_cms_initial,al_id_cms)
+       
+    
     #### Happy Path Update ####
 
     #Pull in lf & cms worksheets
@@ -29,6 +37,10 @@ def col_2(path, filename):
     #Update happypath clamaints to TRUE
     ud.update_label(lf, hp_id_lf, 'Claim Ref #','Process', True)
 
+    # Add new liens to CMS tab and change those claimant to TRUE
+    final_cms = ud.add_liens(cms, version_tab, addlien_null_colid)
+    # ud.update_label(lf, al_id_cms, 'Claim Ref #','Process', True)
+
 
     # Update the original bulk edit with happy path info for LF tab
     ud.update_df(lf, lf_df, hp_id_lf, 'Medicare entitled', 'Updated Mcare','Claim Ref #', 'Claim Ref #')
@@ -38,17 +50,17 @@ def col_2(path, filename):
     ud.update_df(lf, lf_df, hp_id_lf, 'Plrp obligation', 'Updated PLRP','Claim Ref #', 'Claim Ref #')    
     ud.update_df(lf, lf_df, hp_id_lf, 'Holdback amount', 'SLAM HB/Updated HB','Claim Ref #', 'Claim Ref #')
 
-   
     # Update the original bulk edit with happy path info for CMS tab
-    ud.update_df(cms, combined_df, hp_id_cms, 'Status', 'Updated Status','Id', 'COL Id')
-    ud.update_df(cms, combined_df, hp_id_cms, 'Lien type', 'SLAM LienType','Id', 'COL Id')
-    ud.update_df(cms, combined_df, hp_id_cms, 'Lien holder', 'SLAM Lienholder','Id', 'COL Id')
-    ud.update_dups(cms, combined_df, hp_id_cms,  'Amount', 'Question number',  'Updated Amount', 'SLAM Question #', 'Id', 'COL Id')
+    ud.update_df(final_cms, combined_df, hp_id_cms, 'Status', 'Updated Status','Id', 'COL Id')
+    ud.update_df(final_cms, combined_df, hp_id_cms, 'Lien type', 'SLAM LienType','Id', 'COL Id')
+    ud.update_df(final_cms, combined_df, hp_id_cms, 'Lien holder', 'SLAM Lienholder','Id', 'COL Id')
+    ud.update_dups(final_cms, combined_df, hp_id_cms,  'Amount', 'Question number',  'Updated Amount', 'SLAM Question #', 'Id', 'COL Id')
 
-    # Add new liens to CMS tab
-
-    final_cms = ud.add_liens(cms, version_tab, addliens)
-    ud.update_label(lf, al_id_cms, 'Claim Ref #','Process', True)
+    # Update the original bulk edit with add_lien info for CMS tab
+    ud.update_df(final_cms, combined_df, al_lienid, 'Status', 'Updated Status','Lien Id', 'SLAM LienId')
+    ud.update_df(final_cms, combined_df, al_lienid, 'Lien type', 'SLAM LienType','Lien Id', 'SLAM LienId')
+    ud.update_df(final_cms, combined_df, al_lienid, 'Lien holder', 'SLAM Lienholder','Lien Id', 'SLAM LienId')
+    ud.update_dups(final_cms, combined_df, al_lienid,  'Amount', 'Question number',  'Updated Amount', 'SLAM Question #', 'Lien Id', 'SLAM LienId')
 
     # Add Updated DF to original wb
     wb = load_workbook(full_path)
