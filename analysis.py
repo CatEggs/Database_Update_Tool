@@ -1499,7 +1499,7 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_hp_id,cms_hi1_id,hp_hi1,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix this week')
+    	ud.list_intersections(lf_hp_id,cms_hi1_id,hp_hi1,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
     except UnboundLocalError:
     	pass
     # print('Finished 1st matrix group')
@@ -1516,15 +1516,6 @@ From (
     except UnboundLocalError:
     	pass
 
-    # Add Lien
-    try:
-    	nc_al = lf_nc_id.intersection(cms_al_id)
-    except UnboundLocalError:
-    	pass
-    try:
-    	ud.list_intersections(lf_nc_id,cms_al_id,nc_al,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Add Lien')
-    except UnboundLocalError:
-    	pass
 
 	# No change, no issue
     try:
@@ -1536,6 +1527,15 @@ From (
     except UnboundLocalError:
     	pass
 
+    # Add Lien
+    try:
+    	nc_al = lf_nc_id.intersection(cms_al_id)
+    except UnboundLocalError:
+    	pass
+    try:
+    	ud.list_intersections(lf_nc_id,cms_al_id,nc_al,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Add Lien')
+    except UnboundLocalError:
+    	pass
 
 	# Happy Path
     try:
@@ -1553,7 +1553,7 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_nc_id,cms_hi1_id,nc_hi1,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix this week')
+    	ud.list_intersections(lf_nc_id,cms_hi1_id,nc_hi1,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
     except UnboundLocalError:
     	pass
     # print('Finished 2nd matrix group')
@@ -1576,7 +1576,7 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_hi5_id,cms_hp_id,hi5_hp,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix this week (if time)')
+    	ud.list_intersections(lf_hi5_id,cms_hp_id,hi5_hp,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
     except UnboundLocalError:
     	pass
 
@@ -1586,7 +1586,7 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_hi5_id,cms_al_id,hi5_al,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix this week (if time)')
+    	ud.list_intersections(lf_hi5_id,cms_al_id,hi5_al,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
     except UnboundLocalError:
     	pass
 
@@ -1606,7 +1606,7 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_hi5_id,cms_hi1_id,hi5_hi1,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix this week (if time)')
+    	ud.list_intersections(lf_hi5_id,cms_hi1_id,hi5_hi1,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
     except UnboundLocalError:
     	pass
     # print('Finished 3rd matrix group')
@@ -1659,12 +1659,12 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_hi4_id,cms_hi1_id,hi4_hi1,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix when you can')
+    	ud.list_intersections(lf_hi4_id,cms_hi1_id,hi4_hi1,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
     except UnboundLocalError:
     	pass
     # print('Finished 4th matrix group')
 
-	## Human Intervention - Fix this week (If time) ##
+	## Human Intervention (fix this week) (If time) ##
 
 	# Null Liens
     try:
@@ -1672,7 +1672,7 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_hi3_id,cms_null_id,hi3_null,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix this week (if time)')
+    	ud.list_intersections(lf_hi3_id,cms_null_id,hi3_null,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week) (if time)')
     except UnboundLocalError:
     	pass
 
@@ -1682,7 +1682,7 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_hi3_id,cms_hp_id,hi3_hp,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix this week (if time)')
+    	ud.list_intersections(lf_hi3_id,cms_hp_id,hi3_hp,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week) (if time)')
     except UnboundLocalError:
     	pass
 
@@ -1692,7 +1692,7 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_hi3_id,cms_nc_id,hi3_nc,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix this week (if time)')
+    	ud.list_intersections(lf_hi3_id,cms_nc_id,hi3_nc,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week) (if time)')
     except UnboundLocalError:
     	pass
 
@@ -1702,7 +1702,7 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_hi3_id,cms_al_id,hi3_al,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix this week (if time)')
+    	ud.list_intersections(lf_hi3_id,cms_al_id,hi3_al,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week) (if time)')
     except UnboundLocalError:
     	pass
 
@@ -1712,13 +1712,13 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_hi3_id,cms_hi1_id,hi3_hi1,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix this week (if time)')
+    	ud.list_intersections(lf_hi3_id,cms_hi1_id,hi3_hi1,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
     except UnboundLocalError:
     	pass
     # print('Finished 5th matrix group')
 
 
-	## Human Intervention - Fix this week ##
+	## Human Intervention (fix this week) ##
 
 	# NUll Liens
     try:
@@ -1726,7 +1726,7 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_hi1_id,cms_null_id,hi1_null,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix this week')
+    	ud.list_intersections(lf_hi1_id,cms_null_id,hi1_null,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
     except UnboundLocalError:
     	pass
 
@@ -1736,7 +1736,7 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_hi1_id,cms_hp_id,hi1_hp,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix this week')
+    	ud.list_intersections(lf_hi1_id,cms_hp_id,hi1_hp,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
     except UnboundLocalError:
     	pass
 
@@ -1746,7 +1746,7 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_hi1_id,cms_nc_id,hi1_nc,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix this week')
+    	ud.list_intersections(lf_hi1_id,cms_nc_id,hi1_nc,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
     except UnboundLocalError:
     	pass
 
@@ -1756,7 +1756,7 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_hi1_id,cms_al_id,hi1_al,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix this week')
+    	ud.list_intersections(lf_hi1_id,cms_al_id,hi1_al,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
     except UnboundLocalError:
     	pass
 
@@ -1766,7 +1766,7 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_hi1_id,cms_hi1_id,hi1_hi1,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix this week')
+    	ud.list_intersections(lf_hi1_id,cms_hi1_id,hi1_hi1,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
     except UnboundLocalError:
     	pass
     # print('Finished 6th matrix group')
