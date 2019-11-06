@@ -39,8 +39,6 @@ def col_2(path, filename):
 
     # Add new liens to CMS tab and change those claimant to TRUE
     final_cms = ud.add_liens(cms, version_tab, addlien_null_colid)
-    # ud.update_label(lf, al_id_cms, 'Claim Ref #','Process', True)
-
 
     # Update the original bulk edit with happy path info for LF tab
     ud.update_df(lf, lf_df, hp_id_lf, 'Medicare entitled', 'Updated Mcare','Claim Ref #', 'Claim Ref #')

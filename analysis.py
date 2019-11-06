@@ -30,12 +30,15 @@ def col_1():
     metadata = MetaData(bind=engine)
 
     lf_df = pd.read_sql(
-    """
-	Select sub2.*, 
-	Case
+    """Select sub2.*, 
+Case
+		When [Misc. Issues] = 'Not Eligible - BUDNSFW' then 'Not Eligible'
 		When [COL Claim Number] is null then 'Human Intervention (fix this week)'
 		When [Claimant in SLAM correctly?] = 'Human Intervention (fix this week) - Claimant data not pulling' then 'Human Intervention (fix this week)'
 		When [Escrow Analysis] = 'Human Intervention (fix this week) - Claimant data not pulling from SLAM' then 'Human Intervention (fix this week)'
+		When [Updated SLAM Final] = 'Human Intervention (fix this week if time) - Scope issue' then 'Human Intervention (fix this week if time)'
+		When [Updated SLAM Final] = 'Human Intervention (fix this week if time) - Resolved but not final' then 'Human Intervention (fix this week if time)'
+		When [Updated SLAM Final] = 'Human Intervention (fix this week) - No (GRG)' then 'Human Intervention (fix this week)'
 
 		When [Claimant in SLAM correctly?] like 'Not Eligible%' then 'Not Eligible'
 		When [Claimant on CSR?] like 'Not Eligible%' then 'Not Eligible'
@@ -57,17 +60,15 @@ def col_1():
 
 		When [SSN Research] = 'Research - Add to SSN Research in #Problems; notify CM if needed' then 'Human Intervention (fix this week)'
 		When [Escrow Analysis] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
-		When [Updated SLAM Final] = 'Human Intervention (fix this week) - No (GRG)' then 'Human Intervention (fix this week)'
 		When [Rules for Q2, Q4, Questionnaire, Release] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
 		When [Updated Mcare] = 'Human Intervention (fix this week) - Yes in COL but not in SLAM' then 'Human Intervention (fix this week)'
 		When [Updated Non PLRP] = 'Human Intervention (fix this week) - Yes in COL but not in SLAM' then 'Human Intervention (fix this week)'
 		When [Updated Mcaid] = 'Human Intervention (fix this week) - Yes in COL but not in SLAM' then 'Human Intervention (fix this week)'
 		When [Updated Third Party] = 'Human Intervention (fix this week) - Yes in COL but not in SLAM' then 'Human Intervention (fix this week)'
 		When [Updated PLRP] = 'Human Intervention (fix this week) - Yes in COL but not in SLAM' then 'Human Intervention (fix this week)'
+		When [Should we update?] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
 
 		When [Escrow Analysis] = 'Human Intervention (fix this week if time) - sum of liens is greater than escrow' then 'Human Intervention (fix this week if time)'
-		When [Updated SLAM Final] = 'Human Intervention (fix this week if time) - Scope issue' then 'Human Intervention (fix this week if time)'
-		When [Updated SLAM Final] = 'Human Intervention (fix this week if time) - Resolved but not final' then 'Human Intervention (fix this week if time)'
 		When [Should we update?] = 'Human Intervention (fix this week if time) - Finalized Status Id Issue' then 'Human Intervention (fix this week if time)'
 		When [Should we update?] = 'Human Intervention (fix this week if time) - resolved but post payment lien deficient' then 'Human Intervention (fix this week if time)'
 		When [SSN Research] like 'Research%' then 'Human Intervention (fix this week if time)'
@@ -101,9 +102,14 @@ def col_1():
 		
 		End As 'Initial_LF_Label',
 	Case
+		When [Misc. Issues] = 'Not Eligible - BUDNSFW' then 'Not Eligible'
 		When [COL Claim Number] is null then 'Human Intervention (fix this week)'
 		When [Claimant in SLAM correctly?] = 'Human Intervention (fix this week) - Claimant data not pulling' then 'Human Intervention (fix this week)'
 		When [Escrow Analysis] = 'Human Intervention (fix this week) - Claimant data not pulling from SLAM' then 'Human Intervention (fix this week)'
+		
+		When [Updated SLAM Final] = 'Human Intervention (fix this week if time) - Scope issue' then 'Human Intervention (fix this week if time)'
+		When [Updated SLAM Final] = 'Human Intervention (fix this week if time) - Resolved but not final' then 'Human Intervention (fix this week if time)'
+		When [Updated SLAM Final] = 'Human Intervention (fix this week) - No (GRG)' then 'Human Intervention (fix this week)'
 
 		When [Claimant in SLAM correctly?] like 'Not Eligible%' then 'Not Eligible'
 		When [Claimant on CSR?] like 'Not Eligible%' then 'Not Eligible'
@@ -125,17 +131,16 @@ def col_1():
 
 		When [SSN Research] = 'Research - Add to SSN Research in #Problems; notify CM if needed' then 'Human Intervention (fix this week)'
 		When [Escrow Analysis] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
-		When [Updated SLAM Final] = 'Human Intervention (fix this week) - No (GRG)' then 'Human Intervention (fix this week)'
+		
 		When [Rules for Q2, Q4, Questionnaire, Release] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
 		When [Updated Mcare] = 'Human Intervention (fix this week) - Yes in COL but not in SLAM' then 'Human Intervention (fix this week)'
 		When [Updated Non PLRP] = 'Human Intervention (fix this week) - Yes in COL but not in SLAM' then 'Human Intervention (fix this week)'
 		When [Updated Mcaid] = 'Human Intervention (fix this week) - Yes in COL but not in SLAM' then 'Human Intervention (fix this week)'
 		When [Updated Third Party] = 'Human Intervention (fix this week) - Yes in COL but not in SLAM' then 'Human Intervention (fix this week)'
 		When [Updated PLRP] = 'Human Intervention (fix this week) - Yes in COL but not in SLAM' then 'Human Intervention (fix this week)'
+		When [Should we update?] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
 
 		When [Escrow Analysis] = 'Human Intervention (fix this week if time) - sum of liens is greater than escrow' then 'Human Intervention (fix this week if time)'
-		When [Updated SLAM Final] = 'Human Intervention (fix this week if time) - Scope issue' then 'Human Intervention (fix this week if time)'
-		When [Updated SLAM Final] = 'Human Intervention (fix this week if time) - Resolved but not final' then 'Human Intervention (fix this week if time)'
 		When [Should we update?] = 'Human Intervention (fix this week if time) - Finalized Status Id Issue' then 'Human Intervention (fix this week if time)'
 		When [Should we update?] = 'Human Intervention (fix this week if time) - resolved but post payment lien deficient' then 'Human Intervention (fix this week if time)'
 		When [SSN Research] like 'Research%' then 'Human Intervention (fix this week if time)'
@@ -213,7 +218,7 @@ From (
 				When [SLAM Client Funded] = 'Yes' and [Final (SLAM Summary)] = 'Yes' then 'No change, no issue - Resolved'
 
 				When [Final (SLAM Summary)] = 'Yes' and [SLAM HB]<>[COL HB] and [SLAM Client Funded] = 'No' and [Current Escrow]/[COL SA] > .19 and [SLAM HB]>[Current Escrow] then 'Human Intervention (fix this week if time) - sum of liens is greater than escrow'
-				When [Final (SLAM Summary)] = 'Yes' and [SLAM HB]=[COL HB] and [COL HB]=[Current Escrow] and [SLAM Client Funded] = 'No' then 'Human Intervention - Close in SLAM'
+				When[COL Payment Group] is not null and [Final (SLAM Summary)] = 'Yes' and [SLAM HB]=[COL HB] and [COL HB]=[Current Escrow] and [SLAM Client Funded] = 'No' then 'Human Intervention - Close in SLAM'
 				
 				When [Final (SLAM Summary)] = 'Yes' and [SLAM HB]=[COL HB] and [COL HB]<>[Current Escrow] and [SLAM Client Funded] = 'No' and [Current Escrow]/[COL SA] < .19 then 'Human Intervention (fix when you can) - COL HB and Escrow mismatch'
 				When [Final (SLAM Summary)] = 'Yes' and [SLAM HB]<>[COL HB] and [SLAM Client Funded] = 'No' and [Current Escrow]/[COL SA] < .19 then 'Human Intervention (fix when you can) - HB mismatch and not enough escrow'
@@ -234,8 +239,9 @@ From (
 
 
 		--Problems
-			[#Problems], [Bad List Note], [#Prob Notes],
+			[#Problems], [Bad List Note], [#Prob Notes], BUDNSFW_ClientIssue,
 			Case
+				When BUDNSFW_ClientIssue is not null then 'Not Eligible - BUDNSFW'
 				When [COL Case Name] like '%comeback%' then 'Not Eligible - EIF'
 				When [COL Case Name] like 'BLIZZARD & NABERS LLP' or [COL Case Name] like 'LEVIN SIMES LLP - WAVE 2' or [COL Case Name] like 'CLARK LOVE & HUTSON' or [COL Case Name] like 'TRACEY & FOX 29' then 'Not Eligible - Not a valid case'
 				When [SLAM CaseId] = 2450 and [Bad List Note] is not null then 'Not Eligible - Burnett and on Bad List'
@@ -285,6 +291,7 @@ From (
 
 			--Calculate Updated SLAM Final
 			Case
+				When [#Prob Notes] = 'Do not update in normal process' and [Truly Final/FinalizedStatusId Issue?] = 'Issue' then 'No change, no issue - EIF'
 				When [Truly Final/FinalizedStatusId Issue?] = 'Issue' then 'Human Intervention (fix this week if time) - Scope issue'
 				When [SLAM CaseId] IN (862) and [Final (SLAM Summary)] = 'Yes' and [SLAM PreExisting Injuries] not like '%Completed by%' then 'Human Intervention (fix this week) - No (GRG)'
 				When [SLAM CaseId] IN (862) and [SLAM Finalized Status Id] = 2 and [SLAM PreExisting Injuries] not like '%Completed by%' then 'Human Intervention (fix this week) - No (GRG)'
@@ -292,6 +299,7 @@ From (
 				When [SLAM CaseId] IN (862) and [Final (SLAM Summary)] = 'Yes' and [SLAM PreExisting Injuries] is null then 'Human Intervention (fix this week) - No (GRG)'
 				When [SLAM CaseId] IN (862) and [SLAM Finalized Status Id] = 2 and [SLAM PreExisting Injuries] is null then 'Human Intervention (fix this week) - No (GRG)'
 				When [SLAM CaseId] IN (862) and [SLAM Finalized Status Id] = 3 and [SLAM PreExisting Injuries] is null then 'Human Intervention (fix this week) - No (GRG)'
+				When [#Problems] like '%EIF%' and [SLAM Client Funded] = 'Yes' and [Final (SLAM Summary)] = 'No' then 'No change, no issue - EIF'
 				When [SLAM Client Funded] = 'Yes' and [Final (SLAM Summary)] = 'No' then 'Human Intervention (fix this week if time) - Resolved but not final'
 				When [SLAM Client Funded] = 'Yes' and [Final (SLAM Summary)] = 'Yes' then 'No change, no issue - Resolved'
 				When [Final (SLAM Summary)] = 'Yes' and [Truly Final/FinalizedStatusId Issue?] = 'Good' then 'Final'
@@ -326,6 +334,8 @@ From (
 				
 		--Should we update?
 			Case
+				When [Truly Final/FinalizedStatusId Issue?] = 'Issue' and [Final (SLAM Summary)] = 'Yes' then 'Human Intervention (fix this week) - Liens final but status not final'
+
 				When [SLAM Finalized Status Id] = 1 or [SLAM Finalized Status Id] is null then 'Not Eligible - pending'
 				When [Final (SLAM Summary)] ='No' then 'Not Eligible - pending'
 				
@@ -423,28 +433,34 @@ From (
 					JB_AMSProblems_SSNResearch.[Claim Number], JB_AMSProblems_SSNResearch.[Trust Ours?] as 'SSN Mismatch Research',
 
 				--Bad List
-					JB_BurnettBadList.ClientId, JB_BurnettBadList.Note as 'Bad List Note'
+					JB_BurnettBadList.ClientId, JB_BurnettBadList.Note as 'Bad List Note',
+
+				--BUDNSFW
+					BUDNSFW_Client.[Issue Detail] as BUDNSFW_ClientIssue
+
 
 
 
 					FROM            
-						 JB_BulkEdit_LF LEFT OUTER JOIN --Bulk Edit - raw data from COL - only Law Firm tab - downloaded every time you are doing an update - core update file
-                         JB_CSR_AMS ON JB_BulkEdit_LF.[Claim number] = JB_CSR_AMS.[Claim #] LEFT OUTER JOIN -- Cross Settlement Report - weekly excel file sent by Ankura with escrow information
-                         JB_COLSearchExtract_Updated ON JB_BulkEdit_LF.[Claim number] = JB_COLSearchExtract_Updated.[Claim number] LEFT OUTER JOIN --search extract (another download from COL website) - downloaded weekly for entire case
-						 JB_BurnettBadList ON JB_BulkEdit_LF.[Claim number] = JB_BurnettBadList.ThirdPartyId LEFT OUTER JOIN -- a list of claimants with surgery data discrepancies we're not allowed to update  only for Burnet - internal file - temporary hold
-                         JB_AMSProblems_SSNResearch ON JB_BulkEdit_LF.[Claim number] = JB_AMSProblems_SSNResearch.[Claim Number] LEFT OUTER JOIN -- internal list of claimants whose SSN don't match between COL and SLAM, but we've researched and can trust our SSN
-                         JB_AMSProblems_Summary ON JB_BulkEdit_LF.[Claim number] = JB_AMSProblems_Summary.[Claim #] LEFT OUTER JOIN --another internal list of discrepancies of claimants we won't update - will never update
-                         JB_GetClientSummary ON JB_BulkEdit_LF.[Claim number] = JB_GetClientSummary.[ThirdPartyId] --stored procedure getclientsummarybycase - a snapshot of current SLAM data
+						 JB_BulkEdit_LF --Bulk Edit - raw data from COL - only Law Firm tab - downloaded every time you are doing an update - core update file
+                         LEFT OUTER JOIN JB_CSR_AMS ON JB_BulkEdit_LF.[Claim number] = JB_CSR_AMS.[Claim #] -- Cross Settlement Report - weekly excel file sent by Ankura with escrow information
+                         LEFT OUTER JOIN JB_COLSearchExtract_Updated ON JB_BulkEdit_LF.[Claim number] = JB_COLSearchExtract_Updated.[Claim number] --search extract (another download from COL website) - downloaded weekly for entire case
+						 LEFT OUTER JOIN JB_BurnettBadList ON JB_BulkEdit_LF.[Claim number] = JB_BurnettBadList.ThirdPartyId -- a list of claimants with surgery data discrepancies we're not allowed to update  only for Burnet - internal file - temporary hold
+                         LEFT OUTER JOIN JB_AMSProblems_SSNResearch ON JB_BulkEdit_LF.[Claim number] = JB_AMSProblems_SSNResearch.[Claim Number] -- internal list of claimants whose SSN don't match between COL and SLAM, but we've researched and can trust our SSN
+                         LEFT OUTER JOIN JB_AMSProblems_Summary ON JB_BulkEdit_LF.[Claim number] = JB_AMSProblems_Summary.[Claim #] --another internal list of discrepancies of claimants we won't update - will never update
+                         LEFT OUTER JOIN JB_GetClientSummary ON JB_BulkEdit_LF.[Claim number] = JB_GetClientSummary.[ThirdPartyId] --stored procedure getclientsummarybycase - a snapshot of current SLAM data
+						 LEFT OUTER JOIN JB_BUDNSFW_Client as BUDNSFW_Client ON JB_BulkEdit_LF.[Claim number] = BUDNSFW_Client.[Claim number]
 						 
 				) as sub
-		)as sub2""",
+		)as sub2
+""",
     con = engine
     )
 
     cms_df = pd.read_sql(
-    """
-Select	sub2.*,
+    """Select	sub2.*,
 		Case
+			When Prob_Check like 'Not Eligible%' then 'Not Eligible'
 			When [COL LienType] = 'Litigation Finance' or [COL LienType] = 'Attorney' or [COL LienType] = 'Child Care' then 'No change, no issue'
 			When [COL LienType] = 'Other' and ([COL Lienholder] like '%trustee%' or [COL Lienholder] like '%Ch. 13%' or [COL Lienholder] like '%Ch. 7%' or [COL Lienholder] like '%Bankruptcy%' or [COL Lienholder] like '%chapter%' or [COL Lienholder] like '%law%' or [COL Lienholder] like '%mortgage%') then 'No change, no issue'
 			When [COL Question #] > 5 and ([COL Lienholder] like '%trustee%' or [COL Lienholder] like '%Ch. 13%' or [COL Lienholder] like '%Ch. 7%' or [COL Lienholder] like '%Bankruptcy%' or [COL Lienholder] like '%chapter%' or [COL Lienholder] like '%law%' or [COL Lienholder] like '%mortgage%') then 'No change, no issue'
@@ -462,6 +478,9 @@ Select	sub2.*,
 			When [LienId_Check] = 'Not Eligible' then 'Not Eligible'
 			When [InSLAM_Check] = 'Not Eligible' then 'Not Eligible'
 			
+			When [Status_Check] = 'Human Intervention (fix this week) - LienId is not valid - delete out of COL?' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Status_Check] = 'Human Intervention (fix this week) - LienId is NULL in COL' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			
 			When [Status_Check] = 'Human Intervention (fix this week) - LienId is not valid - delete out of COL?' then 'Human Intervention (fix this week)'
 			When [Status_Check] = 'Human Intervention (fix this week) - LienId is NULL in COL' then 'Human Intervention (fix this week)'
 
@@ -476,6 +495,19 @@ Select	sub2.*,
 			When [Lienholder_Check] = 'Look Into' then 'Look Into'
 			When [SLAM LienType (converted)] = 'Look Into' then 'Look Into'
 			
+			When Prob_Check like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Updated Status] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [ThirdPartyId_Match?] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [New Liens?] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Status_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [LienType_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [LienId_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Amount_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Question_#_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Lienholder_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [InSLAM_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			
+			When Prob_Check like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
 			When [Updated Status] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
 			When [ThirdPartyId_Match?] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
 			When [New Liens?] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
@@ -509,6 +541,7 @@ Select	sub2.*,
 			End as [Initial_CMS_Label],
 	
 		Case
+			When Prob_Check like 'Not Eligible%' then 'Not Eligible'
 			When [COL LienType] = 'Litigation Finance' or [COL LienType] = 'Attorney' or [COL LienType] = 'Child Care' then 'No change, no issue'
 			When [COL LienType] = 'Other' and ([COL Lienholder] like '%trustee%' or [COL Lienholder] like '%Ch. 13%' or [COL Lienholder] like '%Ch. 7%' or [COL Lienholder] like '%Bankruptcy%' or [COL Lienholder] like '%chapter%' or [COL Lienholder] like '%law%' or [COL Lienholder] like '%mortgage%') then 'No change, no issue'
 			When [COL Question #] > 5 and ([COL Lienholder] like '%trustee%' or [COL Lienholder] like '%Ch. 13%' or [COL Lienholder] like '%Ch. 7%' or [COL Lienholder] like '%Bankruptcy%' or [COL Lienholder] like '%chapter%' or [COL Lienholder] like '%law%' or [COL Lienholder] like '%mortgage%') then 'No change, no issue'
@@ -526,6 +559,9 @@ Select	sub2.*,
 			When [LienId_Check] = 'Not Eligible' then 'Not Eligible'
 			When [InSLAM_Check] = 'Not Eligible' then 'Not Eligible'
 
+			When [Status_Check] = 'Human Intervention (fix this week) - LienId is not valid - delete out of COL?' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Status_Check] = 'Human Intervention (fix this week) - LienId is NULL in COL' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			
 			When [Status_Check] = 'Human Intervention (fix this week) - LienId is not valid - delete out of COL?' then 'Human Intervention (fix this week)'
 			When [Status_Check] = 'Human Intervention (fix this week) - LienId is NULL in COL' then 'Human Intervention (fix this week)'
 
@@ -540,6 +576,19 @@ Select	sub2.*,
 			When [Lienholder_Check] = 'Look Into' then 'Look Into'
 			When [SLAM LienType (converted)] = 'Look Into' then 'Look Into'
 
+			When Prob_Check like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Updated Status] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [ThirdPartyId_Match?] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [New Liens?] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Status_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [LienType_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [LienId_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Amount_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Question_#_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Lienholder_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [InSLAM_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			
+			When Prob_Check like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
 			When [Updated Status] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
 			When [ThirdPartyId_Match?] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
 			When [New Liens?] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
@@ -574,6 +623,18 @@ Select	sub2.*,
 
 From (
 		Select	sub.*,
+			--#Problems Check
+				Case
+					When Prob_Notes = 'Do not update in normal process' then 'Not Eligible - #Problems'
+					When CaseName like '%EIF' or CaseName like '%hold%' or CaseName like '%Closed%' then 'Not Eligible - EIF or hold or closed case'
+					When [Case Name] like '%EIF' or [Case Name] like '%hold%' or [Case Name] like '%Closed%' then 'Not Eligible - EIF or hold or closed case'
+					When [Client Truly Final] = 'Issue' then 'Human Intervention (fix this week) - Final status issue'
+					When BUDNSFW_ClientIssue_CMS is not null then 'Not Eligible - BUDNSFW client issue'
+					When BUDNSFW_LienIssue is not null then 'Not Eligible - BUDNSFW lien issue'
+					When [SLAM Final] = 'No' then 'Not Eligible - Pending'
+					When [Claimant on CSR?] like 'Not Eligible%' then 'Not Eligible - Not on CSR'
+					Else 'No change, no issue'
+					End As Prob_Check,
 
 			--Third Party Id check
 				Case
@@ -618,7 +679,7 @@ From (
 					
 					When [COL Id] is Null and [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Resolved - Final Demand' then 'Human Intervention (fix this week) - Lien is resolved in SLAM but not in COL at all'
 					When [SLAM Stage] is null and [SLAM OnBenefits] is null and [COL LienId] is null and [SLAM Status] is null then 'Human Intervention (fix this week) - Lien Id needs update'
-					When [COL Id] is Null and [SLAM Status] = 'Final' and len([COL Lienholder]) > 50 then 'Human Intervention (fix this week) - add lien but lienholder name too long' 
+					--When [COL Id] is Null and [SLAM Status] = 'Final' and len([COL Lienholder]) > 50 then 'Human Intervention (fix this week) - add lien but lienholder name too long' 
 
 					When [COL Id] is not null and [SLAM Status] = 'Final' and [COL Status] = 'Final' then 'No update, no issue'
 					When [COL Id] is not null and [SLAM Stage] like 'final%' and [COL Status] = 'Final' then 'No update, no issue'
@@ -668,14 +729,13 @@ From (
 					When [SLAM Stage] not like 'Final%' and [SLAM Stage] not like 'Closed' and [COL Status] = 'Final' then 'Human Intervention (fix this week) - final in COL but pending in SLAM'
 					When [COL Status] is null and [COL Id] is not null then 'Human Intervention (fix this week) - COL status is null'
 					When [COL Status] = 'Final' and [SLAM Status] = 'Pending' then 'Human Intervention (fix this week) - final in COL but pending in SLAM'
-					When [COL Status] = 'Not Entitled' and [SLAM Stage] = 'Final No Entitlement' then 'Human Intervention (fix this week) - lien is not entitled in COL but mismatch in SLAM'
-					When [COL Status] = 'Not Entitled' and [SLAM Stage] = 'Closed' and [SLAM ClosedReason] = 'Resolved - No Entitlement' then 'Human Intervention (fix this week) - lien is not entitled in COL but mismatch in SLAM'
+										
 					When [SLAM Status] = 'Not Entitled' and [COL Status] <> 'Not Entitled' then 'Human Intervention (fix this week) - not entitled in SLAM but COL mismatch'
-					When [SLAM Status] = 'Not Entitled' and [COL Amount] <> 0 then 'Human Intervention (fix this week) - not entitled in SLAM but COL mismatch'
-					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Resolved - No Entitlement' and ([COL Status] <> 'Not Entitled' or [COL Amount] <> 0) then 'Human Intervention (fix this week) - not entitled in SLAM but COL mismatch'
-					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Opened in Error' and ([COL Status] <> 'Not Entitled' or [COL Amount] <> 0) then 'Human Intervention (fix this week) - not entitled in SLAM but COL mismatch'
-					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Per Att%' and ([COL Status] <> 'Not Entitled' or [COL Amount] <> 0) then 'Human Intervention (fix this week) - not entitled in SLAM but COL mismatch'
-					When [SLAM Stage] = 'Final No Entitlement' and ([COL Status] <> 'Not Entitled' or [COL Amount] <> 0) then 'Human Intervention (fix this week) - not entitled in SLAM but COL mismatch'
+					When [SLAM Stage] = 'Final No Entitlement' and [COL Status] <> 'Not Entitled' then 'Human Intervention (fix this week) - lien is not entitled in COL but mismatch in SLAM'
+					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] = 'Resolved - No Entitlement' and [COL Status] <> 'Not Entitled' then 'Human Intervention (fix this week) - lien is not entitled in COL but mismatch in SLAM'
+					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Opened in Error' and [COL Status] <> 'Not Entitled'  then 'Human Intervention (fix this week) - not entitled in SLAM but COL mismatch'
+					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Per Att%' and [COL Status] <> 'Not Entitled' then 'Human Intervention (fix this week) - not entitled in SLAM but COL mismatch'
+					
 					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] is null then 'Human Intervention (Fix this week) - update SLAM closedreason'
 					When [COL LienId] = '9999999' then 'Human Intervention (fix this week) - LienId is not valid - delete out of COL?'
 					When [COL LienId] is not null and [COL Id] is not null and [SLAM Stage] is null and [SLAM LienType] is null then 'Human Intervention (fix this week) - Check case in SLAM - claimant is probably not in the right case'
@@ -746,6 +806,7 @@ From (
 			--Check the lien type
 				Case 
 					When [SLAM LienType (converted)] = [COL LienType] then 'No Change, no issue'
+					When [SLAM Stage] = 'Closed' and ([SLAM ClosedReason] = 'Opened in Error' or [SLAM ClosedReason] like 'Per att%') then 'No Change, no issue'
 					
 					When [COL Lienholder] is null and [COL LienType] is null and [COL Question #] is null and [COL Status] is null and [COL Amount] is null then 'Human Intervention (fix this week) - delete empty lien from COL'
 					When [COL LienId] is null and [Claim Ref #] is not null and [COL LienType] is not null then 'Human Intervention (fix this week) - LienId is NULL in COL'
@@ -821,6 +882,13 @@ From (
 					When [COL Amount] is null and [SLAM Onbenefits] is null and [SLAM LienId] is not null and [COL Status] = 'Pending' then 'Not Eligible'
 					--When [COL Amount] is null and [COL Question #] > 5 and [COL Status] = 'Pending' then 'Not Eligible'
 					
+					When [COL Status] = 'Not Entitled' and [COL Amount] <> 0 then 'Human Intervention (fix this week) - not entitled but COL amount not $0'
+					When [SLAM Status] = 'Not Entitled' and [COL Amount] <> 0 then 'Human Intervention (fix this week) - not entitled but COL amount not $0'
+					When [SLAM Stage] = 'Final No Entitlement' and [COL Amount] <> 0 then 'Human Intervention (fix this week) - not entitled but COL amount not $0'
+					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] = 'Resolved - No Entitlement' and [COL Amount] <> 0 then 'Human Intervention (fix this week) - not entitled but COL amount not $0'
+					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Opened in Error' and [COL Amount] <> 0 then 'Human Intervention (fix this week) - not entitled but COL amount not $0'
+					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Per Att%' and [COL Amount] <> 0 then 'Human Intervention (fix this week) - not entitled but COL amount not $0'
+					
 					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Resolved - Final Demand' and [COL Status] = 'Pending' then 'Human Intervention (fix this week) - Resolved in SLAM but pending in COL'
 					When [SLAM Stage] is null and [SLAM OnBenefits] is null and [COL LienId] is null and [SLAM Status] is null then 'Human Intervention (fix this week) - Lien Id needs update'
 					When [COL Status] = 'Pending' and [COL Amount] is not null then 'Human Intervention (fix this week) - Pending in COL but has amount'
@@ -889,7 +957,19 @@ From (
 					When [COL LienId] is null and [Claim Ref #] is not null and [COL LienType] is not null then 'Human Intervention (fix this week) - LienId is NULL in COL'
 					When [COL LienId] is null and [COL LienType] is not null and [SLAM LienId] is null then 'Human Intervention (fix this week) - LienId is NULL in COL'
 
-					When ([COL Question #] = '8' or [COL Question #] = 8) and [SLAM Status] = 'Final' and ([COL Amount] = '0' or [COL Amount] = 0) and [COL Status] = 'Final' then 'No change, no issue'
+					--Q# > 5 Check
+						When ([COL Question #] = '8' or [COL Question #] = 8) and [SLAM Status] = 'Final' and ([COL Amount] = '0' or [COL Amount] = 0) and [COL Status] = 'Final' then 'No change, no issue'
+						When ([COL Question #] = '7' or [COL Question #] = 7) and [SLAM Status] = 'Final' and ([COL Amount] = '0' or [COL Amount] = 0) and [COL Status] = 'Final' then 'No change, no issue'
+						When ([COL Question #] = '6' or [COL Question #] = 6) and [SLAM Status] = 'Final' and ([COL Amount] = '0' or [COL Amount] = 0) and [COL Status] = 'Final' then 'No change, no issue'
+						
+						When ([COL Question #] = '8' or [COL Question #] = 8) and [COL Status] <> 'Final' and [SLAM Status] = 'Final' then 'Human Intervention (fix this week) - Q# > 5 needs review'
+						When ([COL Question #] = '7' or [COL Question #] = 7) and [COL Status] <> 'Final' and [SLAM Status] = 'Final' then 'Human Intervention (fix this week) - Q# > 5 needs review'
+						When ([COL Question #] = '6' or [COL Question #] = 6) and [COL Status] <> 'Final' and [SLAM Status] = 'Final' then 'Human Intervention (fix this week) - Q# > 5 needs review'
+						
+						When ([COL Question #] = '8' or [COL Question #] = 8) and [SLAM Status] = 'Final' and ([COL Amount] <> 0) and [COL Status] = 'Final' then 'Human Intervention (fix this week) - Q# > 5 needs review'
+						When ([COL Question #] = '7' or [COL Question #] = 7) and [SLAM Status] = 'Final' and ([COL Amount] <> 0) and [COL Status] = 'Final' then 'Human Intervention (fix this week) - Q# > 5 needs review'
+						When ([COL Question #] = '6' or [COL Question #] = 6) and [SLAM Status] = 'Final' and ([COL Amount] <> 0) and [COL Status] = 'Final' then 'Human Intervention (fix this week) - Q# > 5 needs review'
+						
 
 					When [SLAM LienId] is not null and [SLAM OnBenefits] is null and [COL Status] = 'Pending' then 'Not Eligible'
 					When [SLAM Status] = 'Pending' and [COL Status] = 'Pending' then 'Not Eligible'
@@ -924,6 +1004,7 @@ From (
 					When [COL LienId] is null and [Claim Ref #] is not null and [COL LienType] is not null then 'Human Intervention (fix this week) - LienId is NULL in COL'
 					When [COL LienId] is null and [COL LienType] is not null and [SLAM LienId] is null then 'Human Intervention (fix this week) - LienId is NULL in COL'
 
+
 					When [SLAM LienId] is not null and [SLAM OnBenefits] is null and [COL Status] = 'Pending' then 'Not Eligible'
 					When [SLAM Status] = 'Pending' and [COL Status] = 'Pending' then 'Not Eligible'
 					When [SLAM Stage] <> 'Closed' and [SLAM Stage] not like 'final%' and [COL Status] = 'Pending' then 'Not Eligible'
@@ -931,6 +1012,9 @@ From (
 					
 					When len([COL Lienholder]) > 50 then 'Human Intervention (fix this week) - COL lienholder name is more than 50 characters'
 					
+					When [Percent Escrow Remaining] < .1 then 'No change, no issue'
+					When [Percent Escrow Remaining] = 0 or [Percent Escrow Remaining] = '0' then 'No change, no issue'
+
 					When [COL Lienholder] = 'United Healthcare' and [SLAM Lienholder] = 'United Healthcare (PLRP)' then 'No change, no issue'
 					When [COL Lienholder] = 'MO Medicaid' and [SLAM Lienholder] = 'MO Medicaid ' then 'No change, no issue'
 					When [COL Lienholder] = 'CO Medicaid' and [SLAM Lienholder] = 'CO Medicaid ' then 'No change, no issue'
@@ -1243,8 +1327,8 @@ From (
 
 					When [COL Status] = 'Pending' and [SLAM OnBenefits] is null and [SLAM LienId] is null then 'Human Intervention (fix this week) - missing Lien Id'
 
-					When len([COL Lienholder]) <= 50 and [COL Lienholder] <> [SLAM Lienholder] then 'Happy Path - Update Needed' 
-					When len([COL Lienholder]) > 50 and [COL Lienholder] <> [SLAM Lienholder] then 'Human Intervention (fix this week) - Lienholder name mismatch, too long' 
+					When [COL Lienholder] <> [SLAM Lienholder] then 'Happy Path - Update Needed' 
+					--When len([SLAM Lienholder]) > 50 and [COL Lienholder] <> [SLAM Lienholder] then 'Human Intervention (fix this week) - Lienholder name mismatch, too long' 
 
 					When [ThirdPartyId] is null and [SLAM Stage] is null and [SLAM Status] is null then 'Human Intervention (fix this week) - SLAM data not pulling'
 
@@ -1254,8 +1338,6 @@ From (
 					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Opened in Error' and ([COL Status] <> 'Not Entitled' or [COL Amount] <> 0) then 'Human Intervention (fix this week) - not entitled in SLAM but COL mismatch'
 					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Per Att%' and ([COL Status] <> 'Not Entitled' or [COL Amount] <> 0) then 'Human Intervention (fix this week) - not entitled in SLAM but COL mismatch'
 					When [SLAM Stage] = 'Final No Entitlement' and [SLAM ClosedReason] like 'Per Att%' and ([COL Status] <> 'Not Entitled' or [COL Amount] <> 0) then 'Human Intervention (fix this week) - not entitled in SLAM but COL mismatch'
-
-					When [COL Lienholder] <> [SLAM Lienholder] then 'Human Intervention (fix this week) - Lienholder name mismatch' 
 
 					Else 'Look Into'
 					End as [Lienholder_Check],
@@ -1292,17 +1374,54 @@ From (
 					--COL Data: LF Tab
 							LF.[Claim number] as 'COL Claim number',SE.[Firm Name] as 'COL CaseName',
 
-					--SLAM Data
-							FPV.[ThirdPartyId] as 'ThirdPartyId', Liens.[LienId] as 'SLAM LienId', Liens.[COL_LienType] as 'SLAM LienType', Liens.[Question] as 'SLAM Question #', 
-							Liens.[Status] as 'SLAM Status', Liens.[True Final Demand] as 'SLAM Amount', FPV.[LienHolderName] as 'SLAM Lienholder',
-							
-							FPV.[SLAM_LienType], FPV.COL_LienType as 'SLAM LienType (converted)', FPV.Stage as 'SLAM Stage', FPV.ClosedReason as 'SLAM ClosedReason', FPV.OnBenefits as 'SLAM OnBenefits'
+					--SLAM Lien Level Data
+							Liens.CaseName as 'CaseName', FPV.CaseName as 'Case Name', FPV.[ThirdPartyId] as 'ThirdPartyId', cast(Liens.[LienId] as char) as 'SLAM LienId', Liens.[COL_LienType] as 'SLAM LienType', Liens.[Question] as 'SLAM Question #', 
+							Liens.[Status] as 'SLAM Status', 
+							Case
+								When len(FPV.[LienHolderName]) > 49 then left(FPV.LienHolderName, 49)
+								Else FPV.LienHolderName
+								End As 'SLAM Lienholder',
 
-				FROM		CMS_Updated as CMS
-							LEFT OUTER JOIN JB_GetClientOnBenefitSummary_JAM as Liens ON CMS.[Lien Id] = Liens.[LienId]  
-							LEFT OUTER JOIN JB_BulkEdit_LF as LF ON CMS.[Claim Ref #] = LF.[Claim Ref #]
-							LEFT OUTER JOIN JB_COLSearchExtract as SE on CMS.[Claim Number] = SE.[Claim Number]
-							LEFT OUTER JOIN JB_GetClientOnBenefitSummary_FPV as FPV ON CMS.[Lien Id] = FPV.[LienId] 
+								--Amount data from JB_GetClientOnBenefitSummary_JAM
+								Liens.FinalDemandAmount as 'JAM SLAM FD Amount', Liens.FinalGlobalAmount as 'JAM SLAM Global Amount', Liens.[True Final Demand] as 'SLAM Amount',
+							
+								--Amount data from JB_GetClientOnBenefitSummary_FPV
+								FPV.FinalDemandAmount as 'FPV SLAM FD Amount', FPV.FinalGlobalAmount as 'FPV SLAM Global Amount', FPV.[True Final Demand] as 'FPV SLAM True FD Amount',
+
+
+							FPV.[SLAM_LienType], FPV.COL_LienType as 'SLAM LienType (converted)', FPV.Stage as 'SLAM Stage', FPV.ClosedReason as 'SLAM ClosedReason', FPV.OnBenefits as 'SLAM OnBenefits',
+
+					--#Problems
+							Prob.Issue as 'Prob_Issue', Prob.[COL Update Notes] as 'Prob_Notes',
+
+					--BUDNSFW
+							BUDNSFW_Client.[Issue Detail] as BUDNSFW_ClientIssue_CMS, BUDNSFW_Lien.[Issue Detail] as BUDNSFW_LienIssue,
+
+					--CSR
+							CSR.[Resolved Escrow Balance] as 'Current_Escrow',
+							Case
+								When CSR.[Resolved Escrow Balance] is null then 100
+								Else CSR.[Resolved Escrow Balance]/CSR.[Total Claimant Settlement Amount]
+								End as 'Percent Escrow Remaining',
+							Case
+								When CSR.[Claim #] is null then 'Not Eligible - Not on CSR'
+								Else 'Good'
+								End As 'Claimant on CSR?',
+
+					--SLAM Client Level Data
+							Clients.Final as 'SLAM Final', Clients.[Truly Final?] as 'Client Truly Final'
+													
+
+				FROM		CMS_Updated as CMS -- update weekly
+							LEFT OUTER JOIN JB_GetClientOnBenefitSummary_JAM as Liens ON CMS.[Lien Id] = Liens.[LienId] -- view
+							LEFT OUTER JOIN JB_BulkEdit_LF as LF ON CMS.[Claim Ref #] = LF.[Claim Ref #] -- update weekly
+							LEFT OUTER JOIN JB_COLSearchExtract as SE on CMS.[Claim Number] = SE.[Claim Number] -- update weekly
+							LEFT OUTER JOIN JB_GetClientOnBenefitSummary_FPV as FPV ON CMS.[Lien Id] = FPV.[LienId] -- view
+							LEFT OUTER JOIN JB_AMSProblems_Summary as Prob ON LF.[Claim number] = Prob.[Claim #] --update as needed
+							LEFT OUTER JOIN JB_CSR_AMS as CSR ON LF.[Claim number] = CSR.[Claim #] -- update weekly
+							LEFT OUTER JOIN JB_GetClientSummary as Clients ON LF.[Claim number] = Clients.[ThirdPartyId] -- view
+							LEFT OUTER JOIN JB_BUDNSFW_Client as BUDNSFW_Client ON LF.[Claim number] = BUDNSFW_Client.[Claim number] -- update as needed
+							LEFT OUTER JOIN JB_BUDNSFW_Lien as BUDNSFW_Lien ON CMS.[Lien Id] = BUDNSFW_Lien.[Lien Id] -- update as needed
 
 			 ) as sub			
 	) as sub2
@@ -1580,16 +1699,6 @@ From (
     except UnboundLocalError:
     	pass
 
-	# Add Lien
-    try:
-    	hi5_al = lf_hi5_id.intersection(cms_al_id)
-    except UnboundLocalError:
-    	pass
-    try:
-    	ud.list_intersections(lf_hi5_id,cms_al_id,hi5_al,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
-    except UnboundLocalError:
-    	pass
-
 	# No change, no issue
     try:
     	hi5_nc = lf_hi5_id.intersection(cms_nc_id)
@@ -1597,6 +1706,16 @@ From (
     	pass
     try:
     	ud.list_intersections(lf_hi5_id,cms_nc_id,hi5_nc,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Close in SLAM')
+    except UnboundLocalError:
+    	pass
+
+	# Add Lien
+    try:
+    	hi5_al = lf_hi5_id.intersection(cms_al_id)
+    except UnboundLocalError:
+    	pass
+    try:
+    	ud.list_intersections(lf_hi5_id,cms_al_id,hi5_al,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
     except UnboundLocalError:
     	pass
 
@@ -1611,7 +1730,7 @@ From (
     	pass
     # print('Finished 3rd matrix group')
 
-	## Human Intervention - Fix when you can ##	
+	## Human Intervention (fix when you can) ##	
 
 	# Null Liens
     try:
@@ -1619,7 +1738,7 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_hi4_id,cms_null_id,hi4_null,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix when you can')
+    	ud.list_intersections(lf_hi4_id,cms_null_id,hi4_null,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix when you can)')
     except UnboundLocalError:
     	pass
 
@@ -1629,7 +1748,7 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_hi4_id,cms_hp_id,hi4_hp,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix when you can')
+    	ud.list_intersections(lf_hi4_id,cms_hp_id,hi4_hp,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix when you can)')
     except UnboundLocalError:
     	pass
 
@@ -1639,7 +1758,7 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_hi4_id,cms_nc_id,hi4_nc,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix when you can')
+    	ud.list_intersections(lf_hi4_id,cms_nc_id,hi4_nc,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix when you can)')
     except UnboundLocalError:
     	pass
 
@@ -1649,7 +1768,7 @@ From (
     except UnboundLocalError:
     	pass
     try:
-    	ud.list_intersections(lf_hi4_id,cms_al_id,hi4_al,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention - Fix when you can')
+    	ud.list_intersections(lf_hi4_id,cms_al_id,hi4_al,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix when you can)')
     except UnboundLocalError:
     	pass
 
