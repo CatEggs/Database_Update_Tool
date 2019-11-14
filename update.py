@@ -65,6 +65,8 @@ def col_2(path, filename):
     ud.add_ws(full_path, wb, lf, 'LF', 0)
     ud.add_ws(full_path, wb, final_cms, 'CMS', 8)
 
+    return print(f'Done with {filename} update')
+
 
 
 
