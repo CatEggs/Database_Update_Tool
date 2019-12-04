@@ -36,7 +36,7 @@ def col_3(path):
     except KeyError:
         pass
     try:
-        hi_level3 = df_hi.get_group('Human Intervention - Fix when you can')
+        hi_level3 = df_hi.get_group('Human Intervention (fix when you can)')
     except KeyError:
         pass
     try:
