@@ -36,10 +36,7 @@ Case
 		When [COL Claim Number] is null then 'Human Intervention (fix this week)'
 		When [Claimant in SLAM correctly?] = 'Human Intervention (fix this week) - Claimant data not pulling' then 'Human Intervention (fix this week)'
 		When [Escrow Analysis] = 'Human Intervention (fix this week) - Claimant data not pulling from SLAM' then 'Human Intervention (fix this week)'
-		When [Updated SLAM Final] = 'Human Intervention (fix this week if time) - Scope issue' then 'Human Intervention (fix this week if time)'
-		When [Updated SLAM Final] = 'Human Intervention (fix this week if time) - Resolved but not final' then 'Human Intervention (fix this week if time)'
-		When [Updated SLAM Final] = 'Human Intervention (fix this week) - No (GRG)' then 'Human Intervention (fix this week)'
-
+		
 		When [Claimant in SLAM correctly?] like 'Not Eligible%' then 'Not Eligible'
 		When [Claimant on CSR?] like 'Not Eligible%' then 'Not Eligible'
 		When [Escrow Analysis] like 'Not Eligible%' then 'Not Eligible'
@@ -57,6 +54,10 @@ Case
 	
 		When [SA Matches?] = 'Human Intervention (CM) - SA mismatch' then 'Human Intervention (CM)'
 		When [SSN Research] = 'Notify CM' then 'Human Intervention (CM)'
+
+		When [Updated SLAM Final] = 'Human Intervention (fix this week if time) - Scope issue' then 'Human Intervention (fix this week if time)'
+		When [Updated SLAM Final] = 'Human Intervention (fix this week if time) - Resolved but not final' then 'Human Intervention (fix this week if time)'
+		When [Updated SLAM Final] = 'Human Intervention (fix this week) - No (GRG)' then 'Human Intervention (fix this week)'
 
 		When [SSN Research] = 'Research - Add to SSN Research in #Problems; notify CM if needed' then 'Human Intervention (fix this week)'
 		When [Escrow Analysis] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
@@ -77,10 +78,21 @@ Case
 		When [Escrow Analysis] like 'Human Intervention (fix when you can)%' then 'Human Intervention (fix when you can)'
 		When [Update Questions?] = 'Human Intervention (fix when you can) - Resolved but question changes' then 'Human Intervention (fix when you can)'
 		
-		When [Escrow Analysis] = 'Human Intervention - Close in SLAM' and [Claimant in SLAM correctly?] = 'Good' and ([Misc. Issues] = 'Good' or [Misc. Issues] like 'Update Carefully%') and [SA Matches?] = 'Good' and ([SSN Research] ='Good - No Issue' or [SSN Research] ='SSN mismatch ok - trust SLAM') and [Rules for Q2, Q4, Questionnaire, Release] ='Normal Update Process' and [Should we update?] = 'Ok to Update' then 'Human Intervention - Close in SLAM'
+		When [Escrow Analysis] = 'Human Intervention - Close in SLAM' and [Claimant in SLAM correctly?] = 'Good' 
+				and ([Misc. Issues] = 'Good' or [Misc. Issues] like 'Update Carefully%') and [SA Matches?] = 'Good' 
+				and ([SSN Research] ='Good - No Issue' or [SSN Research] ='SSN mismatch ok - trust SLAM') 
+				and [Rules for Q2, Q4, Questionnaire, Release] ='Normal Update Process' 
+				and [Should we update?] = 'Ok to Update' and [Update Questions?] <> 'Questions need update' and [Update HB?] <> 'Happy Path - Update Needed'
+				then 'Human Intervention - Close in SLAM'
 		
-		When [Escrow Analysis] = 'Happy Path - update needed' then 'Happy Path'
-		When [Escrow Analysis] = 'Happy Path - Check COL' then 'Happy Path'
+		When sub2.[Current Escrow] = 0 and ([Escrow Analysis] = 'Happy Path - update needed' or [Escrow Analysis] = 'Happy Path - Check COL' or [Update Questions?] = 'Questions need update' or [Update HB?] = 'Happy Path - Update Needed') then 'Human Intervention (fix this week)'
+
+
+		When sub2.[Current Escrow]/sub2.[COL SA] < .19 and [Escrow Analysis] like 'Happy Path%' then 'Human Intervention (fix this week)'
+		When sub2.[Current Escrow]/sub2.[COL SA] < .19 and [Update Questions?] = 'Questions need update' then 'Human Intervention (fix this week)'
+		When sub2.[Current Escrow]/sub2.[COL SA] < .19 and [Update HB?] = 'Happy Path - Update Needed' then 'Human Intervention (fix this week)'
+		
+		When [Escrow Analysis] like 'Happy Path%' then 'Happy Path'
 		When [Update Questions?] = 'Questions need update' then 'Happy Path'
 		When [Update HB?] = 'Happy Path - Update Needed' then 'Happy Path'
 
@@ -96,21 +108,20 @@ Case
 		When [Updated Third Party] = 'No change, no issue - Q Mismatch, but resolved and HB is good' then 'No change, no issue'
 		When [Updated PLRP] = 'No change, no issue - Q Mismatch, but resolved and HB is good' then 'No change, no issue'
 		When [Update HB?] = 'No Changes in HB' then 'No change, no issue'
-		When [Updated SLAM Final] = 'No change, no issue - Resolved' then 'No change, no issue'
+		When [Updated SLAM Final] like 'No change, no issue%' then 'No change, no issue'
 
 		Else 'Look Into'
 		
 		End As 'Initial_LF_Label',
+
+
+
 	Case
 		When [Misc. Issues] = 'Not Eligible - BUDNSFW' then 'Not Eligible'
 		When [COL Claim Number] is null then 'Human Intervention (fix this week)'
 		When [Claimant in SLAM correctly?] = 'Human Intervention (fix this week) - Claimant data not pulling' then 'Human Intervention (fix this week)'
 		When [Escrow Analysis] = 'Human Intervention (fix this week) - Claimant data not pulling from SLAM' then 'Human Intervention (fix this week)'
 		
-		When [Updated SLAM Final] = 'Human Intervention (fix this week if time) - Scope issue' then 'Human Intervention (fix this week if time)'
-		When [Updated SLAM Final] = 'Human Intervention (fix this week if time) - Resolved but not final' then 'Human Intervention (fix this week if time)'
-		When [Updated SLAM Final] = 'Human Intervention (fix this week) - No (GRG)' then 'Human Intervention (fix this week)'
-
 		When [Claimant in SLAM correctly?] like 'Not Eligible%' then 'Not Eligible'
 		When [Claimant on CSR?] like 'Not Eligible%' then 'Not Eligible'
 		When [Escrow Analysis] like 'Not Eligible%' then 'Not Eligible'
@@ -129,9 +140,12 @@ Case
 		When [SA Matches?] = 'Human Intervention (CM) - SA mismatch' then 'Human Intervention (CM)'
 		When [SSN Research] = 'Notify CM' then 'Human Intervention (CM)'
 
+		When [Updated SLAM Final] = 'Human Intervention (fix this week if time) - Scope issue' then 'Human Intervention (fix this week if time)'
+		When [Updated SLAM Final] = 'Human Intervention (fix this week if time) - Resolved but not final' then 'Human Intervention (fix this week if time)'
+		When [Updated SLAM Final] = 'Human Intervention (fix this week) - No (GRG)' then 'Human Intervention (fix this week)'
+
 		When [SSN Research] = 'Research - Add to SSN Research in #Problems; notify CM if needed' then 'Human Intervention (fix this week)'
 		When [Escrow Analysis] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
-		
 		When [Rules for Q2, Q4, Questionnaire, Release] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
 		When [Updated Mcare] = 'Human Intervention (fix this week) - Yes in COL but not in SLAM' then 'Human Intervention (fix this week)'
 		When [Updated Non PLRP] = 'Human Intervention (fix this week) - Yes in COL but not in SLAM' then 'Human Intervention (fix this week)'
@@ -149,10 +163,20 @@ Case
 		When [Escrow Analysis] like 'Human Intervention (fix when you can)%' then 'Human Intervention (fix when you can)'
 		When [Update Questions?] = 'Human Intervention (fix when you can) - Resolved but question changes' then 'Human Intervention (fix when you can)'
 		
-		When [Escrow Analysis] = 'Human Intervention - Close in SLAM' and [Claimant in SLAM correctly?] = 'Good' and ([Misc. Issues] = 'Good' or [Misc. Issues] like 'Update Carefully%') and [SA Matches?] = 'Good' and ([SSN Research] ='Good - No Issue' or [SSN Research] ='SSN mismatch ok - trust SLAM') and [Rules for Q2, Q4, Questionnaire, Release] ='Normal Update Process' and [Should we update?] = 'Ok to Update' then 'Human Intervention - Close in SLAM'
+		When [Escrow Analysis] = 'Human Intervention - Close in SLAM' and [Claimant in SLAM correctly?] = 'Good' 
+				and ([Misc. Issues] = 'Good' or [Misc. Issues] like 'Update Carefully%') and [SA Matches?] = 'Good' 
+				and ([SSN Research] ='Good - No Issue' or [SSN Research] ='SSN mismatch ok - trust SLAM') 
+				and [Rules for Q2, Q4, Questionnaire, Release] ='Normal Update Process' 
+				and [Should we update?] = 'Ok to Update' and [Update Questions?] <> 'Questions need update' and [Update HB?] <> 'Happy Path - Update Needed'
+				then 'Human Intervention - Close in SLAM'
 		
-		When [Escrow Analysis] = 'Happy Path - update needed' then 'Happy Path'
-		When [Escrow Analysis] = 'Happy Path - Check COL' then 'Happy Path'
+		When sub2.[Current Escrow] = 0 and ([Escrow Analysis] = 'Happy Path - update needed' or [Escrow Analysis] = 'Happy Path - Check COL' or [Update Questions?] = 'Questions need update' or [Update HB?] = 'Happy Path - Update Needed') then 'Human Intervention (fix this week)'
+
+		When sub2.[Current Escrow]/sub2.[COL SA] < .19 and [Escrow Analysis] like 'Happy Path%' then 'Human Intervention (fix this week)'
+		When sub2.[Current Escrow]/sub2.[COL SA] < .19 and [Update Questions?] = 'Questions need update' then 'Human Intervention (fix this week)'
+		When sub2.[Current Escrow]/sub2.[COL SA] < .19 and [Update HB?] = 'Happy Path - Update Needed' then 'Human Intervention (fix this week)'
+		
+		When [Escrow Analysis] like 'Happy Path%' then 'Happy Path'
 		When [Update Questions?] = 'Questions need update' then 'Happy Path'
 		When [Update HB?] = 'Happy Path - Update Needed' then 'Happy Path'
 
@@ -168,7 +192,7 @@ Case
 		When [Updated Third Party] = 'No change, no issue - Q Mismatch, but resolved and HB is good' then 'No change, no issue'
 		When [Updated PLRP] = 'No change, no issue - Q Mismatch, but resolved and HB is good' then 'No change, no issue'
 		When [Update HB?] = 'No Changes in HB' then 'No change, no issue'
-		When [Updated SLAM Final] = 'No change, no issue - Resolved' then 'No change, no issue'
+		When [Updated SLAM Final] like 'No change, no issue%' then 'No change, no issue'
 		
 		Else 'Look Into'
 		
@@ -189,6 +213,7 @@ From (
 		--Not in SLAM?
 			Case
 				When [Claim Status] = 'Withdrawn' then 'Not Eligible - Withdrawn'
+				When [Claim Status] = 'Release issued' or [Claim Status] = 'Release deficient' then 'Not Eligible - Prepayment'
 				When [SLAM ThirdPartyId] is null then 'Human Intervention (fix this week) - Claimant data not pulling'
 				When [SLAM CaseName] like '%EIF%' then 'Not Eligible - EIF'
 				Else 'Good'
@@ -292,7 +317,7 @@ From (
 			--Calculate Updated SLAM Final
 			Case
 				When [#Prob Notes] = 'Do not update in normal process' and [Truly Final/FinalizedStatusId Issue?] = 'Issue' then 'No change, no issue - EIF'
-				When [Truly Final/FinalizedStatusId Issue?] = 'Issue' then 'Human Intervention (fix this week if time) - Scope issue'
+				When [Truly Final/FinalizedStatusId Issue?] = 'Issue' and [Claim Status] = 'Withdrawn' then 'No change, no issue - Withdrawn'
 				When [SLAM CaseId] IN (862) and [Final (SLAM Summary)] = 'Yes' and [SLAM PreExisting Injuries] not like '%Completed by%' then 'Human Intervention (fix this week) - No (GRG)'
 				When [SLAM CaseId] IN (862) and [SLAM Finalized Status Id] = 2 and [SLAM PreExisting Injuries] not like '%Completed by%' then 'Human Intervention (fix this week) - No (GRG)'
 				When [SLAM CaseId] IN (862) and [SLAM Finalized Status Id] = 3 and [SLAM PreExisting Injuries] not like '%Completed by%' then 'Human Intervention (fix this week) - No (GRG)'
@@ -300,10 +325,17 @@ From (
 				When [SLAM CaseId] IN (862) and [SLAM Finalized Status Id] = 2 and [SLAM PreExisting Injuries] is null then 'Human Intervention (fix this week) - No (GRG)'
 				When [SLAM CaseId] IN (862) and [SLAM Finalized Status Id] = 3 and [SLAM PreExisting Injuries] is null then 'Human Intervention (fix this week) - No (GRG)'
 				When [#Problems] like '%EIF%' and [SLAM Client Funded] = 'Yes' and [Final (SLAM Summary)] = 'No' then 'No change, no issue - EIF'
+
+				When [SLAM CaseId] in (2284, 2919, 3634, 2184, 2450) and [Truly Final/FinalizedStatusId Issue?] = 'Issue' and [SLAM Quest Recd] = 0 then 'No change, no issue - no questionnaire'
+				When [SLAM CaseId] in (2284, 2919, 3634, 2184, 2450) and [Truly Final/FinalizedStatusId Issue?] = 'Issue' and [SLAM Quest Recd] is null then 'No change, no issue - no questionnaire'
+				When [Truly Final/FinalizedStatusId Issue?] = 'Issue' and [Claim Status] <> 'Withdrawn' then 'Human Intervention (fix this week if time) - Scope issue'
+
 				When [SLAM Client Funded] = 'Yes' and [Final (SLAM Summary)] = 'No' then 'Human Intervention (fix this week if time) - Resolved but not final'
+				
 				When [SLAM Client Funded] = 'Yes' and [Final (SLAM Summary)] = 'Yes' then 'No change, no issue - Resolved'
 				When [Final (SLAM Summary)] = 'Yes' and [Truly Final/FinalizedStatusId Issue?] = 'Good' then 'Final'
 				When [Final (SLAM Summary)] = 'No' and [Truly Final/FinalizedStatusId Issue?] = 'Good' then 'Pending'
+				
 				Else 'Look Into'
 				End As 'Updated SLAM Final',
 		
@@ -360,27 +392,27 @@ From (
 				End as 'Update Questions?',
 
 			Case
-				When [SLAM Client Funded] = 'Yes' and [SLAM HB]=[COL HB] and [COL Mcare] <> [SLAM Mcare] then 'No change, no issue - Q Mismatch, but resolved and HB is good'
+				When [SLAM Client Funded] = 'Yes' and [SLAM HB]=[COL HB] and [COL Mcare] <> [SLAM Mcare] then 'No change, no issue - resolved, Q Mismatch, but HB is good'
 				When [COL Mcare] = 'Yes' and [SLAM Mcare] <> 'Yes' then 'Human Intervention (fix this week) - Yes in COL but not in SLAM'
 				Else [SLAM Mcare]
 				End As 'Updated Mcare',
 			Case
-				When [SLAM Client Funded] = 'Yes' and [SLAM HB]=[COL HB] and [COL Non PLRP] <> [SLAM Non PLRP] then 'No change, no issue - Q Mismatch, but resolved and HB is good'
+				When [SLAM Client Funded] = 'Yes' and [SLAM HB]=[COL HB] and [COL Non PLRP] <> [SLAM Non PLRP] then 'No change, no issue - resolved, Q Mismatch, but HB is good'
 				When [COL Non PLRP] = 'Yes' and [SLAM Non PLRP] <> 'Yes' then 'Human Intervention (fix this week) - Yes in COL but not in SLAM'
 				Else [SLAM Non PLRP]
 				End As 'Updated Non PLRP',
 			Case
-				When [SLAM Client Funded] = 'Yes' and [SLAM HB]=[COL HB] and [COL Mcaid] <> [SLAM Mcaid] then 'No change, no issue- Q Mismatch, but resolved and HB is good'
+				When [SLAM Client Funded] = 'Yes' and [SLAM HB]=[COL HB] and [COL Mcaid] <> [SLAM Mcaid] then 'No change, no issue - resolved, Q Mismatch, but HB is good'
 				When [COL Mcaid] = 'Yes' and [SLAM Mcaid] <> 'Yes' then 'Human Intervention (fix this week) - Yes in COL but not in SLAM'
 				Else [SLAM Mcaid]
 				End As 'Updated Mcaid',
 			Case
-				When [SLAM Client Funded] = 'Yes' and [SLAM HB]=[COL HB] and [COL Third Party] <> [SLAM Third Party] then 'No change, no issue - Q Mismatch, but resolved and HB is good'
+				When [SLAM Client Funded] = 'Yes' and [SLAM HB]=[COL HB] and [COL Third Party] <> [SLAM Third Party] then 'No change, no issue - resolved, Q Mismatch, but HB is good'
 				When [COL Third Party] = 'Yes' and [SLAM Third Party] <> 'Yes' then 'Human Intervention (fix this week) - Yes in COL but not in SLAM'
 				Else [SLAM Third Party]
 				End As 'Updated Third Party',
 			Case
-				When [SLAM Client Funded] = 'Yes' and [SLAM HB]=[COL HB] and [COL PLRP] <> [SLAM PLRP] then 'No change, no issue - Q Mismatch, but resolved and HB is good'
+				When [SLAM Client Funded] = 'Yes' and [SLAM HB]=[COL HB] and [COL PLRP] <> [SLAM PLRP] then 'No change, no issue - resolved, Q Mismatch, but HB is good'
 				When [COL PLRP] = 'Yes' and [SLAM PLRP] <> 'Yes' then 'Human Intervention (fix this week) - Yes in COL but not in SLAM'
 				Else [SLAM PLRP]
 				End As 'Updated PLRP',
@@ -478,8 +510,8 @@ From (
 			When [LienId_Check] = 'Not Eligible' then 'Not Eligible'
 			When [InSLAM_Check] = 'Not Eligible' then 'Not Eligible'
 			
-			When [Status_Check] = 'Human Intervention (fix this week) - LienId is not valid - delete out of COL?' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [Status_Check] = 'Human Intervention (fix this week) - LienId is NULL in COL' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Status_Check] = 'Human Intervention (fix this week) - LienId is not valid - delete out of COL?' and [Percent Escrow Remaining] < .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Status_Check] = 'Human Intervention (fix this week) - LienId is NULL in COL' and [Percent Escrow Remaining] < .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
 			
 			When [Status_Check] = 'Human Intervention (fix this week) - LienId is not valid - delete out of COL?' then 'Human Intervention (fix this week)'
 			When [Status_Check] = 'Human Intervention (fix this week) - LienId is NULL in COL' then 'Human Intervention (fix this week)'
@@ -495,17 +527,17 @@ From (
 			When [Lienholder_Check] = 'Look Into' then 'Look Into'
 			When [SLAM LienType (converted)] = 'Look Into' then 'Look Into'
 			
-			When Prob_Check like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [Updated Status] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [ThirdPartyId_Match?] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [New Liens?] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [Status_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [LienType_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [LienId_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [Amount_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [Question_#_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [Lienholder_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [InSLAM_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When Prob_Check like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Updated Status] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [ThirdPartyId_Match?] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [New Liens?] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Status_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [LienType_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [LienId_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Amount_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Question_#_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Lienholder_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [InSLAM_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
 			
 			When Prob_Check like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
 			When [Updated Status] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
@@ -518,6 +550,14 @@ From (
 			When [Question_#_Check] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
 			When [Lienholder_Check] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
 			When [InSLAM_Check] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
+			
+			When [New Liens?] = 'Happy Path - Add Lien' and [Percent Escrow Remaining] < .19 then 'Human Intervention (fix this week)'
+			When [LienId_Check] = 'Happy Path - Add lien' and [Percent Escrow Remaining] < .19 then 'Human Intervention (fix this week)'
+			
+			When [Status_Check] like 'Happy Path%' and [Percent Escrow Remaining] < .19 then 'Human Intervention (fix this week)'
+			When [Amount_Check] like 'Happy Path%' and [Percent Escrow Remaining] < .19 then 'Human Intervention (fix this week)'
+			When [Question_#_Check] like 'Happy Path%' and [Percent Escrow Remaining] < .19 then 'Human Intervention (fix this week)'
+			When [Lienholder_Check] like 'Happy Path%' and [Percent Escrow Remaining] < .19 then 'Human Intervention (fix this week)'
 			
 			When [New Liens?] = 'Happy Path - Add Lien' then 'Add Lien'
 			When [LienId_Check] = 'Happy Path - Add lien' then 'Add Lien'
@@ -536,6 +576,7 @@ From (
 			When [Lienholder_Check] = 'No change, no issue' then 'No change, no issue'
 			When [InSLAM_Check] = 'No change, no issue' then 'No change, no issue'
 			When [New Liens?] = 'No update, no issue' then 'No change, no issue'
+			When [Prob_Check] like 'No update, no issue%' then 'No change, no issue'
 						
 			Else 'Look Into'
 			End as [Initial_CMS_Label],
@@ -559,8 +600,8 @@ From (
 			When [LienId_Check] = 'Not Eligible' then 'Not Eligible'
 			When [InSLAM_Check] = 'Not Eligible' then 'Not Eligible'
 
-			When [Status_Check] = 'Human Intervention (fix this week) - LienId is not valid - delete out of COL?' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [Status_Check] = 'Human Intervention (fix this week) - LienId is NULL in COL' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Status_Check] = 'Human Intervention (fix this week) - LienId is not valid - delete out of COL?' and [Percent Escrow Remaining] < .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Status_Check] = 'Human Intervention (fix this week) - LienId is NULL in COL' and [Percent Escrow Remaining] < .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
 			
 			When [Status_Check] = 'Human Intervention (fix this week) - LienId is not valid - delete out of COL?' then 'Human Intervention (fix this week)'
 			When [Status_Check] = 'Human Intervention (fix this week) - LienId is NULL in COL' then 'Human Intervention (fix this week)'
@@ -576,17 +617,17 @@ From (
 			When [Lienholder_Check] = 'Look Into' then 'Look Into'
 			When [SLAM LienType (converted)] = 'Look Into' then 'Look Into'
 
-			When Prob_Check like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [Updated Status] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [ThirdPartyId_Match?] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [New Liens?] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [Status_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [LienType_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [LienId_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [Amount_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [Question_#_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [Lienholder_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
-			When [InSLAM_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] > .2 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When Prob_Check like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Updated Status] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [ThirdPartyId_Match?] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [New Liens?] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Status_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [LienType_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [LienId_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Amount_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Question_#_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [Lienholder_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
+			When [InSLAM_Check] like 'Human Intervention (fix this week)%' and [Percent Escrow Remaining] < .19 and [SLAM Final] <> 'Yes' then 'Human Intervention (fix when you can)'
 			
 			When Prob_Check like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
 			When [Updated Status] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
@@ -600,6 +641,14 @@ From (
 			When [Lienholder_Check] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
 			When [InSLAM_Check] like 'Human Intervention (fix this week)%' then 'Human Intervention (fix this week)'
 			
+			When [New Liens?] = 'Happy Path - Add Lien' and [Percent Escrow Remaining] < .19 then 'Human Intervention (fix this week)'
+			When [LienId_Check] = 'Happy Path - Add lien' and [Percent Escrow Remaining] < .19 then 'Human Intervention (fix this week)'
+			
+			When [Status_Check] like 'Happy Path%' and [Percent Escrow Remaining] < .19 then 'Human Intervention (fix this week)'
+			When [Amount_Check] like 'Happy Path%' and [Percent Escrow Remaining] < .19 then 'Human Intervention (fix this week)'
+			When [Question_#_Check] like 'Happy Path%' and [Percent Escrow Remaining] < .19 then 'Human Intervention (fix this week)'
+			When [Lienholder_Check] like 'Happy Path%' and [Percent Escrow Remaining] < .19 then 'Human Intervention (fix this week)'
+			
 			When [New Liens?] = 'Happy Path - Add Lien' then 'Add Lien'
 			When [LienId_Check] = 'Happy Path - Add lien' then 'Add Lien'
 			
@@ -607,6 +656,7 @@ From (
 			When [Amount_Check] like 'Happy Path%' then 'Happy Path'
 			When [Question_#_Check] like 'Happy Path%' then 'Happy Path'
 			When [Lienholder_Check] like 'Happy Path%' then 'Happy Path'
+			When [New Liens?] like 'Happy Path%' then 'Happy Path'
 
 			When [ThirdPartyId_Match?] = 'No change, no issue' then 'No change, no issue'
 			When [Status_Check] = 'No change, no issue' then 'No change, no issue'
@@ -617,6 +667,7 @@ From (
 			When [Lienholder_Check] = 'No change, no issue' then 'No change, no issue'
 			When [InSLAM_Check] = 'No change, no issue' then 'No change, no issue'
 			When [New Liens?] = 'No update, no issue' then 'No change, no issue'
+			When [Prob_Check] like 'No update, no issue%' then 'No change, no issue'
 			
 			Else 'Look Into'
 			End as [CMS_Label]
@@ -628,11 +679,15 @@ From (
 					When Prob_Notes = 'Do not update in normal process' then 'Not Eligible - #Problems'
 					When CaseName like '%EIF' or CaseName like '%hold%' or CaseName like '%Closed%' then 'Not Eligible - EIF or hold or closed case'
 					When [Case Name] like '%EIF' or [Case Name] like '%hold%' or [Case Name] like '%Closed%' then 'Not Eligible - EIF or hold or closed case'
-					When [Client Truly Final] = 'Issue' then 'Human Intervention (fix this week) - Final status issue'
 					When BUDNSFW_ClientIssue_CMS is not null then 'Not Eligible - BUDNSFW client issue'
 					When BUDNSFW_LienIssue is not null then 'Not Eligible - BUDNSFW lien issue'
 					When [SLAM Final] = 'No' then 'Not Eligible - Pending'
 					When [Claimant on CSR?] like 'Not Eligible%' then 'Not Eligible - Not on CSR'
+					
+					When [Client Truly Final] = 'Issue' and [SLAM CaseId] in (2284, 2919, 3634, 2184, 2450) and ([SLAM Quest] is null or [SLAM Quest] = 0) then 'No Change, No Issue - no questionnaire'
+					When [Client Truly Final] = 'Issue' and [SLAM CaseId] in (2284, 2919, 3634, 2184, 2450) and [SLAM Quest] = 1 then 'Human Intervention (fix this week) - Final status issue'
+					When [Client Truly Final] = 'Issue' and [SLAM CaseId] not in (2284, 2919, 3634, 2184, 2450) then 'Human Intervention (fix this week) - Final status issue'
+					
 					Else 'No change, no issue'
 					End As Prob_Check,
 
@@ -641,29 +696,6 @@ From (
 					When [COL Claim number] = [ThirdPartyId] then 'No change, no issue'
 
 					When [COL Claim number] <> [ThirdPartyId] then 'Human Intervention (fix this week) - ThirdPartyId mismatch'
-
-					--When [SLAM LienId] is not null and [SLAM OnBenefits] is null and [COL Status] = 'Pending' then 'Not Eligible'
-					--When [SLAM Status] = 'Pending' and [COL Status] = 'Pending' then 'Not Eligible'
-					--When [SLAM Stage] <> 'Closed' and [SLAM Stage] not like 'final%' and [COL Status] = 'Pending' then 'Not Eligible'
-					--When [SLAM Stage] is null and [SLAM OnBenefits] is null and [COL LienId] is null and [SLAM Status] is null then 'Human Intervention (fix this week) - Lien Id needs update'
-
-					--When [COL Lienholder] is null and [COL LienType] is null and [COL Question #] is null and [COL Status] is null and [COL Amount] is null then 'Human Intervention (fix this week) - delete empty lien from COL'
-					--When [COL LienId] is null and [Claim Ref #] is not null and [COL LienType] is not null then 'Human Intervention (fix this week) - LienId is NULL in COL'
-					--When [COL LienId] is null and [COL LienType] is not null and [SLAM LienId] is null then 'Human Intervention (fix this week) - LienId is NULL in COL'
-
-					--When [COL LienType] like 'Attorney' and [COL Question #] > 5 then 'No change, no issue'
-					--When [COL LienType] like 'Litigation Finance' and [COL Question #] > 5 then 'No change, no issue'
-					--When [COL LienType] like 'Other' then 'Human Intervention (fix this week) - lientype of other'
-
-					--When [SLAM Status] = 'Not Entitled' and [COL Status] = 'Not Entitled' then 'No change, no issue'
-					--When [SLAM Stage] = 'Final No Entitlement' and [COL Status] = 'Not Entitled' then 'No change, no issue'
-					--When ([SLAM ClosedReason] = 'Resolved - No Entitlement' or [SLAM ClosedReason] = 'Opened in Error' or [SLAM ClosedReason] like 'per att%') and [COL Status] = 'Not Entitled' then 'No change, no issue'
-
-					--When [COL Claim number] <> [ThirdPartyId] then 'Human Intervention (fix this week) - ThirdPartyId mismatch'
-					
-					--When [SLAM Status] = 'Not Entitled' and [COL Status] <> 'Not Entitled' then 'Human Intervention (fix this week) - Status mismatch'
-					--When [SLAM Stage] = 'Final No Entitlement' and [COL Status] <> 'Not Entitled' then 'Human Intervention (fix this week) - Status mismatch'
-					--When ([SLAM ClosedReason] = 'Resolved - No Entitlement' or [SLAM ClosedReason] = 'Opened in Error' or [SLAM ClosedReason] like 'per att%') and [COL Status] <> 'Not Entitled' then 'Human Intervention (fix this week) - Status mismatch'
 
 					When [ThirdPartyId] is null and [SLAM Stage] is null and [SLAM Status] is null then 'Human Intervention (fix this week) - SLAM data not pulling'
 
@@ -679,22 +711,19 @@ From (
 					
 					When [COL Id] is Null and [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Resolved - Final Demand' then 'Human Intervention (fix this week) - Lien is resolved in SLAM but not in COL at all'
 					When [SLAM Stage] is null and [SLAM OnBenefits] is null and [COL LienId] is null and [SLAM Status] is null then 'Human Intervention (fix this week) - Lien Id needs update'
-					--When [COL Id] is Null and [SLAM Status] = 'Final' and len([COL Lienholder]) > 50 then 'Human Intervention (fix this week) - add lien but lienholder name too long' 
+					
+					When [COL Id] is not null and ([SLAM Stage] like 'final%' or [SLAM Status] = 'Final' or [SLAM Stage] = 'Closed') and [COL Status] = 'Final' then 'No update, no issue'
 
-					When [COL Id] is not null and [SLAM Status] = 'Final' and [COL Status] = 'Final' then 'No update, no issue'
-					When [COL Id] is not null and [SLAM Stage] like 'final%' and [COL Status] = 'Final' then 'No update, no issue'
-					When [COL Id] is not null and [SLAM Stage] = 'Closed' and [COL Status] = 'Final' then 'No update, no issue'
 					When [COL Id] is not null and [SLAM Status] = 'Not Entitled' and [COL Status] = 'Not Entitled' then 'No update, no issue'
-					When [COL Id] is not null and [SLAM Stage] like 'final%' and [COL Status] = 'Not Entitled' then 'No update, no issue'
-					When [COL Id] is not null and [SLAM Stage] = 'Closed' and [COL Status] = 'Not Entitled' then 'No update, no issue'
-					When [COL Id] is not null and [SLAM Status] = 'Pending' and [COL Status] = 'Pending' then 'No update, no issue'
-					When [COL Id] is not null and [SLAM Stage] like 'final%' and [COL Status] = 'Pending' then 'No update, no issue'
-					When [COL Id] is not null and [SLAM Stage] = 'Closed' and [COL Status] = 'Pending' then 'No update, no issue'
+					When [COL Id] is not null and ([SLAM Stage] = 'Closed' or [SLAM Stage] like 'final no entitlement') and [COL Status] = 'Not Entitled' then 'No update, no issue'
 
+					When [COL Id] is not null and [SLAM Status] = 'Pending' and [COL Status] = 'Pending' then 'No update, no issue'
+					When [COL Id] is not null and [SLAM Stage] not like 'final%' and [SLAM Stage] <> 'Closed' and [COL Status] = 'Pending' then 'No update, no issue'
+					
 					When [COL Id] is not null and [SLAM Status] = 'Pending' and [COL Status] = 'Final' then 'Human Intervention (fix this week) - Final in COL but pending in SLAM'
 					When [COL Id] is not null and [SLAM Stage] not like 'final%' and [SLAM Stage] <> 'Closed' and [COL Status] = 'Final' then 'Human Intervention (fix this week) - Final in COL but pending in SLAM'
-					When [COL Id] is not null and [SLAM Status] = 'Pending' and [COL Status] = 'Not Entitled' then 'Human Intervention (fix this week) - Final in COL but pending in SLAM'
-					When [COL Id] is not null and [SLAM Stage] not like 'final%' and [SLAM Stage] <> 'Closed' and [COL Status] = 'Not Entitled' then 'Human Intervention (fix this week) - Final in COL but pending in SLAM'
+					When [COL Id] is not null and [SLAM Status] = 'Pending' and [COL Status] = 'Not Entitled' then 'Human Intervention (fix this week) - Not Entitled in COL but pending in SLAM'
+					When [COL Id] is not null and [SLAM Stage] not like 'final%' and [SLAM Stage] <> 'Closed' and [COL Status] = 'Not Entitled' then 'Human Intervention (fix this week) - Not Entitled in COL but pending in SLAM'
 					
 					When [SLAM LienId] is not null and [SLAM OnBenefits] is null and [COL Status] = 'Pending' then 'Not Eligible'
 					When [SLAM Status] = 'Pending' and [COL Status] = 'Pending' then 'Not Eligible'
@@ -702,11 +731,13 @@ From (
 					When [COL Id] is Null and [SLAM Stage] not like 'Final%' and [SLAM Stage] <> 'Closed' then 'Not Eligible'
 					When [SLAM Stage] <> 'Closed' and [SLAM Stage] not like 'final%' then 'Not Eligible'
 
-					When [COL Id] is Null and [SLAM Status] = 'Final' and len([COL Lienholder]) <= 50 then 'Happy Path - Add Lien'
+					When [COL Id] is Null and [SLAM Status] = 'Final' then 'Happy Path - Add Lien'
+					When [COL Id] is not Null and [SLAM Status] = 'Final' and [COL Status] = 'Pending' then 'Happy Path - Update needed'
 
 					When [ThirdPartyId] is null and [SLAM Stage] is null and [SLAM Status] is null then 'Human Intervention (fix this week) - SLAM data not pulling'
 										
 					Else 'Look Into'
+
 					End as [New Liens?],
 
 			--Check Status
@@ -730,32 +761,31 @@ From (
 					When [COL Status] is null and [COL Id] is not null then 'Human Intervention (fix this week) - COL status is null'
 					When [COL Status] = 'Final' and [SLAM Status] = 'Pending' then 'Human Intervention (fix this week) - final in COL but pending in SLAM'
 										
-					When [SLAM Status] = 'Not Entitled' and [COL Status] <> 'Not Entitled' then 'Human Intervention (fix this week) - not entitled in SLAM but COL mismatch'
-					When [SLAM Stage] = 'Final No Entitlement' and [COL Status] <> 'Not Entitled' then 'Human Intervention (fix this week) - lien is not entitled in COL but mismatch in SLAM'
-					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] = 'Resolved - No Entitlement' and [COL Status] <> 'Not Entitled' then 'Human Intervention (fix this week) - lien is not entitled in COL but mismatch in SLAM'
-					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Opened in Error' and [COL Status] <> 'Not Entitled'  then 'Human Intervention (fix this week) - not entitled in SLAM but COL mismatch'
-					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Per Att%' and [COL Status] <> 'Not Entitled' then 'Human Intervention (fix this week) - not entitled in SLAM but COL mismatch'
+					When ([SLAM Stage] = 'Final No Entitlement' or [SLAM Status] = 'Not Entitled') and [COL Status] <> 'Not Entitled' then 'Human Intervention (fix this week) - not entitled in SLAM but COL mismatch'
+					When [SLAM Stage] = 'Closed' and ([SLAM ClosedReason] = 'Resolved - No Entitlement' or [SLAM ClosedReason] like 'Opened in Error' or [SLAM ClosedReason] like 'Per Att%') and [COL Status] <> 'Not Entitled' then 'Human Intervention (fix this week) - lien is not entitled in COL but mismatch in SLAM'
 					
 					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] is null then 'Human Intervention (Fix this week) - update SLAM closedreason'
 					When [COL LienId] = '9999999' then 'Human Intervention (fix this week) - LienId is not valid - delete out of COL?'
 					When [COL LienId] is not null and [COL Id] is not null and [SLAM Stage] is null and [SLAM LienType] is null then 'Human Intervention (fix this week) - Check case in SLAM - claimant is probably not in the right case'
 					When [COL LienId] is null and [COL Id] is not null and [SLAM Stage] is null and [SLAM LienType] is null then 'Human Intervention (fix this week) - Lien might not be in SLAM'
 
-					When [COL Status] = 'Pending' and [SLAM Status] = 'Final' then 'Happy Path - Update needed'
-					When [COL Status] = 'Pending' and [SLAM Stage] = 'Final No Entitlement' then 'Happy Path - Update needed'
+					When [COL Status] = 'Not Entitled' and [SLAM Status] = 'Final' and [SLAM True FD Amount] = 0 then 'Human Intervention (fix when you can) - not entitled in COL but final in SLAM, $0 FD'
+					When [COL Status] = 'Not Entitled' and [SLAM Status] = 'Final' and [SLAM True FD Amount] > 0 then 'Human Intervention (fix this week) - not entitled in COL but final in SLAM'
+
+					When [SLAM Status] <> 'Closed' and ([SLAM ClosedReason] = 'Opened in Error' or [SLAM ClosedReason] = 'Resolved - No Entitlement' or [SLAM ClosedReason] like 'Per Att%') then 'Human Intervention (fix this week) - SLAM stage and closed reason inconsistent'
+
+					When [COL Status] = 'Pending' and ([SLAM Stage] like 'Final%' or [SLAM Status] = 'Final') then 'Happy Path - Update needed'
 					When [COL Status] = 'Pending' and ([SLAM ClosedReason] = 'Opened in Error' or [SLAM ClosedReason] = 'Resolved - No Entitlement' or [SLAM ClosedReason] like 'Per Att%') then 'Happy Path - Update needed'
 					
 					
 					When [COL Status] = 'Final' and [SLAM Status] = 'Final' then 'No change, no issue'
 					When [SLAM Status] = 'Not Entitled' and [COL Status] = 'Not Entitled' and [COL Amount] = 0 then 'No change, no issue'
-					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Resolved - No Entitlement' and [COL Status] = 'Not Entitled' then 'No Change, no issue'
-					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Opened in Error' and [COL Status] = 'Not Entitled' then 'No Change, no issue'
-					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Per Att%' and [COL Status] = 'Not Entitled' then 'No Change, no issue'
+					When [SLAM Stage] = 'Closed' and ([SLAM ClosedReason] = 'Opened in Error' or [SLAM ClosedReason] = 'Resolved - No Entitlement' or [SLAM ClosedReason] like 'Per Att%') and [COL Status] = 'Not Entitled' then 'No Change, no issue'
 					When [SLAM Stage] = 'Final No Entitlement' and [COL Status] = 'Not Entitled' then 'No Change, no issue'
 
-					When [COL LienType] like 'Attorney' and [COL Question #] > 5 then 'No change, no issue'
-					When [COL LienType] like 'Litigation Finance' and [COL Question #] > 5 then 'No change, no issue'
-					When [COL LienType] like 'Other' then 'Human Intervention (fix this week) - lientype of other'
+					When [COL LienType] = 'Attorney' and [COL Question #] > 5 then 'No change, no issue'
+					When [COL LienType] = 'Litigation Finance' and [COL Question #] > 5 then 'No change, no issue'
+					When [COL LienType] = 'Other' then 'Human Intervention (fix this week) - lientype of other'
 
 					When [ThirdPartyId] is null and [SLAM Stage] is null and [SLAM Status] is null then 'Human Intervention (fix this week) - SLAM data not pulling'
 
@@ -765,36 +795,36 @@ From (
 			
 			--Updated SLAM Status
 				Case
+					When [SLAM LienId] is null and ([COL LienType] = 'Attorney' or [COL LienType] = 'Litigation Finance') then [COL Status]
+
 					When [COL Lienholder] is null and [COL LienType] is null and [COL Question #] is null and [COL Status] is null and [COL Amount] is null then 'Human Intervention (fix this week) - delete empty lien from COL'
 					When [COL LienId] is null and [Claim Ref #] is not null and [COL LienType] is not null then 'Human Intervention (fix this week) - LienId is NULL in COL'
 					When [COL LienId] is null and [COL LienType] is not null and [SLAM LienId] is null then 'Human Intervention (fix this week) - LienId is NULL in COL'
 
-					When [COL LienType] like 'Attorney' and [COL Question #] > 5 then [COL Status]
-					When [COL LienType] like 'Litigation Finance' and [COL Question #] > 5 then [COL Status]
-					
-					When [COL Question #] = 8 and [SLAM Status] = 'Final' and [COL Amount] = 0 and [COL Status] = 'Final' then 'Final'
-					When [SLAM Status] = 'Final' and [COL Status] = 'Final' then 'Final'
-					When [SLAM Status] = 'Final' and [COL Status] = 'Pending' then 'Final'
+					When ([COL LienType] like 'Litigation Finance' or [COL LienType] like 'Attorney') and [COL Question #] > 5 then [COL Status]
 										
-					When [SLAM Status] = 'Not Entitled' and [COL Status] = 'Not Entitled' then 'Not Entitled'
-					When [SLAM Status] = 'Not Entitled' and [COL Status] = 'Pending' then 'Not Entitled'
-					When [COL Status] = 'Not Entitled' and [SLAM Stage] = 'Final No Entitlement' then 'Not Entitled'
-					When [COL Status] = 'Not Entitled' and [SLAM Stage] = 'Closed' and ([SLAM ClosedReason] = 'Opened in Error' or [SLAM ClosedReason] like 'Per Att%' or [SLAM ClosedReason] = 'Resolved - No Entitlement')  then 'Not Entitled'
+					When [SLAM Status] = 'Pending' and [COL Status] <> 'Pending' then 'Human Intervention (fix this week) - Pending in SLAM but not in COL'
 					
-					When [COL Status] = 'Pending' and [SLAM Status] = 'Not Entitled' then 'Not Entitled'
-					When [COL Status] = 'Pending' and [SLAM Stage] = 'Final No Entitlement' then 'Not Entitled'
-					When [COL Status] = 'Pending' and [SLAM Stage] = 'Closed' and ([SLAM ClosedReason] = 'Opened in Error' or [SLAM ClosedReason] like 'Per Att%' or [SLAM ClosedReason] = 'Resolved - No Entitlement') then 'Not Entitled'
+					When [SLAM Status] = 'Not Entitled' and [COL Status] <> 'Not Entitled' and [COL Status] <> 'Pending' then 'Human Intervention (fix this week) - Not Entitled in SLAM but COL mismatch'
+					When [SLAM Stage] = 'Final No Entitlement' and [COL Status] <> 'Pending' and [COL Status] <> 'Not Entitled' then 'Human Intervention (fix this week) - Not Entitled in SLAM but COL mismatch'
+					When [SLAM Stage] = 'Closed' 
+							and ([SLAM ClosedReason] = 'Opened in Error' or [SLAM ClosedReason] like 'Per Att%' or [SLAM ClosedReason] = 'Resolved - No Entitlement')
+							and [COL Status] <> 'Pending' and [COL Status] <> 'Not Entitled' 
+							then 'Human Intervention (fix this week) - Not Entitled in SLAM but COL mismatch'
+					When [SLAM Status] = 'Not Entitled' and [COL status] = 'Final' then 'Human Intervention (fix this week) - Not Entitled in SLAM but COL mismatch'
 					
-					When [SLAM Status] = 'Pending' and [COL Status] = 'Pending' then 'Pending'
-					When ([SLAM Stage] <> 'Closed' or [SLAM Stage] not like 'Final%') and [COL Status] = 'Pending' then 'Pending'
+					When [COL Question #] > 5 and [SLAM Status] = 'Final' and [COL Amount] = 0 and [COL Status] = 'Final' then 'Final'
+					When [COL Question #] < 6 and [SLAM Status] = 'Final' then 'Final'
+													
+					When [COL Question #] < 6 and [SLAM Status] = 'Not Entitled' then 'Not Entitled'
+					When [COL Question #] < 6 and [SLAM Stage] = 'Final No Entitlement' then 'Not Entitled'
+					When [COL Question #] < 6 and [SLAM Stage] = 'Closed' 
+							and ([SLAM ClosedReason] = 'Opened in Error' or [SLAM ClosedReason] like 'Per Att%' or [SLAM ClosedReason] = 'Resolved - No Entitlement')  
+							then 'Not Entitled'
+					
+					When [COL Question #] < 6 and [SLAM Status] = 'Pending' then 'Pending'
+					When [COL Question #] < 6 and ([SLAM Stage] <> 'Closed' or [SLAM Stage] not like 'Final%') then 'Pending'
 									
-					When [SLAM Status] = 'Not Entitled' and ([COL Status] <> 'Not Entitled' or [COL Status] <> 'Pending') then 'Human Intervention (fix this week) - Status mismatch'
-					When [SLAM Status] = 'Pending' and [COL Status] <> 'Pending' then 'Human Intervention (fix this week) - Status mismatch'
-					When ([SLAM Stage] <> 'Closed' or [SLAM Stage] not like 'Final%') and [COL Status] <> 'Pending' then 'Human Intervention (fix this week) - Status mismatch'
-					When ([COL Status] <> 'Pending' or [COL Status] <> 'Not Entitled') and [SLAM Stage] = 'Final No Entitlement' then 'Human Intervention (fix this week) - Status mismatch'
-					When ([COL Status] <> 'Pending' or [COL Status] <> 'Not Entitled') and [SLAM Stage] = 'Closed' and ([SLAM ClosedReason] = 'Opened in Error' or [SLAM ClosedReason] like 'Per Att%' or [SLAM ClosedReason] = 'Resolved - No Entitlement') then 'Human Intervention (fix this week) - Status mismatch'
-					When [COL LienType] = 'Final' and [SLAM Stage] = 'Not Entitled' then 'Human Intervention (fix this week) - Status mismatch'
-					
 					When [COL LienType] like 'Other' then 'Human Intervention (fix this week) - lientype of other'
 
 					When [ThirdPartyId] is null and [SLAM Stage] is null and [SLAM Status] is null then 'Human Intervention (fix this week) - SLAM data not pulling'
@@ -836,6 +866,7 @@ From (
 					End as [LienType_Check],
 
 
+
 			--Check LienId
 				Case 
 					When [COL Lienholder] is null and [COL LienType] is null and [COL Question #] is null and [COL Status] is null and [COL Amount] is null then 'Human Intervention (fix this week) - delete empty lien from COL'
@@ -866,6 +897,7 @@ From (
 					End as [LienId_Check],
 
 
+
 			--Check Amount	
 				Case
 					When [COL Lienholder] is null and [COL LienType] is null and [COL Question #] is null and [COL Status] is null and [COL Amount] is null then 'Human Intervention (fix this week) - delete empty lien from COL'
@@ -883,26 +915,27 @@ From (
 					--When [COL Amount] is null and [COL Question #] > 5 and [COL Status] = 'Pending' then 'Not Eligible'
 					
 					When [COL Status] = 'Not Entitled' and [COL Amount] <> 0 then 'Human Intervention (fix this week) - not entitled but COL amount not $0'
-					When [SLAM Status] = 'Not Entitled' and [COL Amount] <> 0 then 'Human Intervention (fix this week) - not entitled but COL amount not $0'
-					When [SLAM Stage] = 'Final No Entitlement' and [COL Amount] <> 0 then 'Human Intervention (fix this week) - not entitled but COL amount not $0'
-					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] = 'Resolved - No Entitlement' and [COL Amount] <> 0 then 'Human Intervention (fix this week) - not entitled but COL amount not $0'
-					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Opened in Error' and [COL Amount] <> 0 then 'Human Intervention (fix this week) - not entitled but COL amount not $0'
-					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Per Att%' and [COL Amount] <> 0 then 'Human Intervention (fix this week) - not entitled but COL amount not $0'
+					When [SLAM Status] = 'Not Entitled' and [COL Status] = 'Not Entitled' and [COL Amount] <> 0 then 'Human Intervention (fix this week) - not entitled but COL amount not $0'
+					When [SLAM Stage] = 'Final No Entitlement' and [COL Status] = 'Not Entitled' and [COL Amount] <> 0 then 'Human Intervention (fix this week) - not entitled but COL amount not $0'
+					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] = 'Resolved - No Entitlement' and [COL Status] = 'Not Entitled' and [COL Amount] <> 0 then 'Human Intervention (fix this week) - not entitled but COL amount not $0'
+					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Opened in Error' and [COL Status] = 'Not Entitled' and [COL Amount] <> 0 then 'Human Intervention (fix this week) - not entitled but COL amount not $0'
+					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Per Att%' and [COL Status] = 'Not Entitled' and [COL Amount] <> 0 then 'Human Intervention (fix this week) - not entitled but COL amount not $0'
 					
-					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Resolved - Final Demand' and [COL Status] = 'Pending' then 'Human Intervention (fix this week) - Resolved in SLAM but pending in COL'
+					When [SLAM Stage] = 'Closed' and [SLAM ClosedReason] like 'Resolved%' and [COL Status] = 'Pending' then 'Human Intervention (fix this week) - Resolved in SLAM but pending in COL'
 					When [SLAM Stage] is null and [SLAM OnBenefits] is null and [COL LienId] is null and [SLAM Status] is null then 'Human Intervention (fix this week) - Lien Id needs update'
 					When [COL Status] = 'Pending' and [COL Amount] is not null then 'Human Intervention (fix this week) - Pending in COL but has amount'
-					When [COL Amount] <> Round([SLAM Amount],2) and [COL Question #] <= 5 then 'Human Intervention (fix this week) - SLAM and COL lien amounts mismatch'
-					When [SLAM Amount] is null and [COL Amount] is not null and [SLAM Stage] <> 'Final No Entitlement' and [SLAM ClosedReason] <> 'Opened in Error' and [SLAM ClosedReason] <> 'Resolved - No Entitlement' and [SLAM ClosedReason] not like 'Per att%' then 'Human Intervention (fix this week) - COL amount is not null but SLAM is null'
+					When [COL Amount] <> Round([SLAM True FD Amount],2) and [COL Question #] <= 5 then 'Human Intervention (fix this week) - SLAM and COL lien amounts mismatch'
+					When [SLAM True FD Amount] is null and [COL Amount] is not null and [SLAM Stage] <> 'Final No Entitlement' and [SLAM ClosedReason] <> 'Opened in Error' and [SLAM ClosedReason] <> 'Resolved - No Entitlement' and [SLAM ClosedReason] not like 'Per att%' then 'Human Intervention (fix this week) - COL amount is not null but SLAM is null'
 					When [COL Amount] is null and ([COL Status] = 'Final' or [COL Status] = 'Not Entitled') then 'Human Intervention (fix this week) - COL lien is final but no amount'
 					When [COL Amount] <> 0 and [COL Status] = 'Not Entitled' then 'Human Intervention (fix this week) - COL lien is final but no amount'
 					When [COL Status] = 'Pending' and [SLAM OnBenefits] is null and [SLAM LienId] is null then 'Human Intervention (fix this week) - missing Lien Id'
 					When [COL LienType] like 'Other' then 'Human Intervention (fix this week) - lientype of other'
 					When [ThirdPartyId] is null and [SLAM Stage] is null and [SLAM Status] is null then 'Human Intervention (fix this week) - SLAM data not pulling'
+					When [COL Amount] is null and [SLAM True FD Amount] is not null and [COL Question #] <= 5 and [COL Status] = 'Pending' and [SLAM Status] = 'Final' then 'Human Intervention (fix this week) - Q#8 amount needs updating'
 
-					When [COL Amount] = Round([SLAM Amount],2) then 'No change, no issue'
-					When [COL Amount] = Round([SLAM Amount],2) and [COL Question #] <= 5 and [COL Status] = 'Final' and [SLAM Status] = 'Final' then 'No change, no issue'
-					When [COL Amount] = Round([SLAM Amount],2) and [COL Question #] <= 5 and [COL Status] = 'Not Entitled' and [SLAM Onbenefits] = 'No' then 'No change, no issue'
+					When [COL Amount] = Round([SLAM True FD Amount],2) then 'No change, no issue'
+					When [COL Amount] = Round([SLAM True FD Amount],2) and [COL Question #] <= 5 and [COL Status] = 'Final' and [SLAM Status] = 'Final' then 'No change, no issue'
+					When [COL Amount] = Round([SLAM True FD Amount],2) and [COL Question #] <= 5 and [COL Status] = 'Not Entitled' and [SLAM Onbenefits] = 'No' then 'No change, no issue'
 					When [SLAM Status] = 'Not Entitled' and [COL Amount] = 0 then 'No change, no issue'
 					When [SLAM Stage] = 'Final No Entitlement' and [COL Amount] = 0 then 'No change, no issue'
 					When ([SLAM ClosedReason] = 'Opened in Error' or [SLAM ClosedReason] = 'Resolved - No Entitlement' or [SLAM ClosedReason] like 'Per att%') and [COL Amount] = 0 then 'No change, no issue'
@@ -910,8 +943,11 @@ From (
 					When [COL LienType] like 'Attorney' and [COL Question #] > 5 then 'No change, no issue'
 					When [COL LienType] like 'Litigation Finance' and [COL Question #] > 5 then 'No change, no issue'
 					
-					When [COL Amount] is null and [SLAM Amount] is not null and [COL Question #] <= 5 and [COL Status] = 'Pending' and [SLAM Status] = 'Final' then 'Happy Path - update needed'
-					When [COL Amount] is null and [SLAM Stage] = 'Final No Entitlement' and [COL Question #] <= 5 and [COL Status] = 'Pending' and [SLAM Status] = 'Final' then 'Happy Path - update needed'
+					When [COL Amount] is null and [SLAM True FD Amount] is not null and [COL Question #] <= 5 and [COL Status] = 'Pending' and [SLAM Status] = 'Final' then 'Happy Path - update needed'
+					When [COL Amount] is null and [SLAM Stage] = 'Final No Entitlement' and [COL Question #] <= 5 and [COL Status] = 'Pending' then 'Happy Path - update needed'
+					When [COL Amount] is null and [SLAM Stage] = 'Closed' 
+							and ([SLAM ClosedReason] = 'Opened in Error' or [SLAM ClosedReason] = 'Resolved - No Entitlement' or [SLAM ClosedReason] like 'Per att%') 
+							and [COL Question #] <= 5 and [COL Status] = 'Pending' then 'Happy Path - update needed'
 										
 					Else 'Look Into'
 					End as [Amount_Check],
@@ -930,10 +966,10 @@ From (
 					When [COL Question #] > 5 and [SLAM Status] = 'Final' then cast(0 as varchar)
 					When [COL Question #] > 5 and [SLAM Status] = 'Pending' then ''
 
-					When [COL Question #] < 5 and [SLAM Status] = 'Final' then cast([SLAM Amount] as varchar)
-					When [COL Question #] < 5 and [SLAM OnBenefits] = 'Yes' then cast([SLAM Amount] as varchar)
-					When [COL Question #] < 5 and [SLAM Stage] like 'Final Demand%' then cast([SLAM Amount] as varchar)
-					When [COL Question #] < 5 and [SLAM Stage] like 'Closed' and [SLAM ClosedReason] = 'Resolved - Final Demand' then cast([SLAM Amount] as varchar)
+					When [COL Question #] < 5 and [SLAM Status] = 'Final' then cast([SLAM True FD Amount] as varchar)
+					When [COL Question #] < 5 and [SLAM OnBenefits] = 'Yes' then cast([SLAM True FD Amount] as varchar)
+					When [COL Question #] < 5 and [SLAM Stage] like 'Final Demand%' then cast([SLAM True FD Amount] as varchar)
+					When [COL Question #] < 5 and [SLAM Stage] like 'Closed' and [SLAM ClosedReason] = 'Resolved - Final Demand' then cast([SLAM True FD Amount] as varchar)
 
 					When [SLAM Status] = 'Not Entitled' then cast(0 as varchar)
 					When [SLAM Stage] = 'Final No Entitlement' then cast(0 as varchar)
@@ -966,9 +1002,9 @@ From (
 						When ([COL Question #] = '7' or [COL Question #] = 7) and [COL Status] <> 'Final' and [SLAM Status] = 'Final' then 'Human Intervention (fix this week) - Q# > 5 needs review'
 						When ([COL Question #] = '6' or [COL Question #] = 6) and [COL Status] <> 'Final' and [SLAM Status] = 'Final' then 'Human Intervention (fix this week) - Q# > 5 needs review'
 						
-						When ([COL Question #] = '8' or [COL Question #] = 8) and [SLAM Status] = 'Final' and ([COL Amount] <> 0) and [COL Status] = 'Final' then 'Human Intervention (fix this week) - Q# > 5 needs review'
-						When ([COL Question #] = '7' or [COL Question #] = 7) and [SLAM Status] = 'Final' and ([COL Amount] <> 0) and [COL Status] = 'Final' then 'Human Intervention (fix this week) - Q# > 5 needs review'
-						When ([COL Question #] = '6' or [COL Question #] = 6) and [SLAM Status] = 'Final' and ([COL Amount] <> 0) and [COL Status] = 'Final' then 'Human Intervention (fix this week) - Q# > 5 needs review'
+						When ([COL Question #] = '8' or [COL Question #] = 8) and [SLAM Status] = 'Final' and [COL Amount] <> 0 and [COL Status] = 'Final' then 'Human Intervention (fix this week) - Q# > 5 needs review'
+						When ([COL Question #] = '7' or [COL Question #] = 7) and [SLAM Status] = 'Final' and [COL Amount] <> 0 and [COL Status] = 'Final' then 'Human Intervention (fix this week) - Q# > 5 needs review'
+						When ([COL Question #] = '6' or [COL Question #] = 6) and [SLAM Status] = 'Final' and [COL Amount] <> 0 and [COL Status] = 'Final' then 'Human Intervention (fix this week) - Q# > 5 needs review'
 						
 
 					When [SLAM LienId] is not null and [SLAM OnBenefits] is null and [COL Status] = 'Pending' then 'Not Eligible'
@@ -1010,24 +1046,23 @@ From (
 					When [SLAM Stage] <> 'Closed' and [SLAM Stage] not like 'final%' and [COL Status] = 'Pending' then 'Not Eligible'
 					When [SLAM Stage] is null and [SLAM OnBenefits] is null and [COL LienId] is null and [SLAM Status] is null then 'Human Intervention (fix this week) - Lien Id needs update'
 					
-					When len([COL Lienholder]) > 50 then 'Human Intervention (fix this week) - COL lienholder name is more than 50 characters'
+					--When len([COL Lienholder]) <= 50 and [COL Lienholder] = [SLAM Lienholder] then 'No change, no issue' 
+					--When len([COL Lienholder]) > 50 then 'Human Intervention (fix this week) - COL lienholder name is more than 50 characters'
+					When [COL Lienholder] = [SLAM Lienholder] then 'No change, no issue' 
 					
-					When [Percent Escrow Remaining] < .1 then 'No change, no issue'
+					When [Percent Escrow Remaining] < .15 then 'No change, no issue'
 					When [Percent Escrow Remaining] = 0 or [Percent Escrow Remaining] = '0' then 'No change, no issue'
 
-					When [COL Lienholder] = 'United Healthcare' and [SLAM Lienholder] = 'United Healthcare (PLRP)' then 'No change, no issue'
 					When [COL Lienholder] = 'MO Medicaid' and [SLAM Lienholder] = 'MO Medicaid ' then 'No change, no issue'
 					When [COL Lienholder] = 'CO Medicaid' and [SLAM Lienholder] = 'CO Medicaid ' then 'No change, no issue'
 					When [COL Lienholder] = 'AL Medicaid' and [SLAM Lienholder] = 'AL Medicaid ' then 'No change, no issue'
-					When [COL Lienholder] = 'Humana' and [SLAM Lienholder] = 'Humana (PLRP)' then 'No change, no issue'
 					When [COL Lienholder] = 'KS Medicaid' and [SLAM Lienholder] = 'KS Medicaid ' then 'No change, no issue'
 					When [COL Lienholder] = 'MS Medicaid' and [SLAM Lienholder] = 'MS Medicaid ' then 'No change, no issue'
 					When [COL Lienholder] = 'ME Medicaid' and [SLAM Lienholder] = 'ME Medicaid ' then 'No change, no issue'
-					When [COL Lienholder] = 'OK Medicaid' and [SLAM Lienholder] = 'OK Medicaid - HRS' then 'No change, no issue'
+					When [COL Lienholder] = '%OK Medicaid%' and [SLAM Lienholder] = '%OK Medicaid%' then 'No change, no issue'
 					When [COL Lienholder] = 'GA Medicaid' and [SLAM Lienholder] = 'GA Medicaid ' then 'No change, no issue'
-					When [COL Lienholder] = 'United Healthcare' and [SLAM Lienholder] = 'United Healthcare (Optum)' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS Florida' and [SLAM Lienholder] = 'BCBS FL' then 'No change, no issue'
-					When [COL Lienholder] = 'Cambia Health Solutions/Regence' and [SLAM Lienholder] = 'Cambia Health Solutions/Regence BCBS' then 'No change, no issue'
+					When [COL Lienholder] like '%Regence%' and [SLAM Lienholder] like '%Regence%' then 'No change, no issue'
 					When [COL Lienholder] = 'MD Medicaid' and [SLAM Lienholder] = 'MD Medicaid ' then 'No change, no issue'
 					When [COL Lienholder] = 'NC Medicaid' and [SLAM Lienholder] = 'NC Medicaid ' then 'No change, no issue'
 					When [COL Lienholder] = 'KY Medicaid' and [SLAM Lienholder] = 'KY Medicaid ' then 'No change, no issue'
@@ -1036,162 +1071,106 @@ From (
 					When [COL Lienholder] = 'Keystone' and [SLAM Lienholder] = 'Keystone Health Plan West, Inc/Highmark, Inc.' then 'No change, no issue'
 					When [COL Lienholder] = 'IA Medicaid' and [SLAM Lienholder] = 'IA Medicaid ' then 'No change, no issue'
 					When [COL Lienholder] = 'Freedom Health' and [SLAM Lienholder] = 'Freedom Health ' then 'No change, no issue'
-					When [COL Lienholder] = 'Cambia Health Solutions/Regence Plan Members-Mesh' and [SLAM Lienholder] = 'Cambia Health Solutions/Regence BCBS' then 'No change, no issue'
-					When [COL Lienholder] = 'Aetna Inc.' and [SLAM Lienholder] = 'Aetna - PLRP' then 'No change, no issue'
 					When [COL Lienholder] = 'NH Medicaid' and [SLAM Lienholder] = 'NH Medicaid ' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS North Carolina' and [SLAM Lienholder] = 'BCBS NC' then 'No change, no issue'
 					When [COL Lienholder] = 'HealthNow' and [SLAM Lienholder] = 'HealthNow New York' then 'No change, no issue'
 					When [COL Lienholder] = 'Viva Health' and [SLAM Lienholder] = 'Viva Health (Mass Tort)' then 'No change, no issue'
 					When [COL Lienholder] = 'Blue Cross Medicare Advantage' and [SLAM Lienholder] = 'Blue Cross Medicare Advantage/HCSC' then 'No change, no issue'
-					When [COL Lienholder] = 'Aetna Better Health F.K.A.  Coventry Care (KY MCO)' and [SLAM Lienholder] = 'Aetna Better Health F.K.A.  Coventry Care (KY MCO) ' then 'No change, no issue'
 					When [COL Lienholder] = 'Blue Cross Blue Shield Association' and [SLAM Lienholder] = 'BCBS Association (FEBA)' then 'No change, no issue'
 					When [COL Lienholder] = 'MN Medicaid' and [SLAM Lienholder] = 'MN Medicaid ' then 'No change, no issue'
 					When [COL Lienholder] = 'Banner Medisun/BCBS AZ' and [SLAM Lienholder] = 'Banner Medisun/BCBS AZ Medicare Advantage' then 'No change, no issue'
 					When [COL Lienholder] = 'MT Medicaid' and [SLAM Lienholder] = 'MT Medicaid ' then 'No change, no issue'
 					When [COL Lienholder] = 'Priority Health' and [SLAM Lienholder] = 'Priority Health (PLRP)' then 'No change, no issue'
 					When [COL Lienholder] = 'AvMed' and [SLAM Lienholder] = 'AvMed (PLRP)' then 'No change, no issue'
-					When [COL Lienholder] = 'Anthem Insurance Companies/Wellpoint' and [SLAM Lienholder] = 'Anthem BCBS/Wellpoint' then 'No change, no issue'
-					When [COL Lienholder] = 'Coventry Care (KY MCO)' and [SLAM Lienholder] = 'Aetna Better Health F.K.A.  Coventry Care (KY MCO) ' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (Army)' and [SLAM Lienholder] = 'Department of the Army' then 'No change, no issue'
-					When [COL Lienholder] = 'Cigna' and [SLAM Lienholder] = 'Cigna ' then 'No change, no issue'
-					When [COL Lienholder] = 'Windsor Health Plan/WellCare' and [SLAM Lienholder] = 'WellCare/Windsor Health Plan' then 'No change, no issue'
+					When [COL Lienholder] like '%Wellpoint%' and [SLAM Lienholder] like '%Wellpoint%' then 'No change, no issue'
+					When [COL Lienholder] like '%Cigna%' and [SLAM Lienholder] like '%Cigna%' then 'No change, no issue'
 					When [COL Lienholder] = 'NY Medicaid' and [SLAM Lienholder] = 'NY Medicaid ' then 'No change, no issue'
 					When [COL Lienholder] = 'United Community (MI MCO)' and [SLAM Lienholder] = 'United Community (MI MCO) ' then 'No change, no issue'
-					When [COL Lienholder] = 'Dept. of the Air Force' and [SLAM Lienholder] = 'Dept. of the Air Force - Region 5' then 'No change, no issue'
+					When [COL Lienholder] like '%Air Force%' and [SLAM Lienholder] like '%Air Force%' then 'No change, no issue'
 					When [COL Lienholder] = 'SelectCare of Texas' and [SLAM Lienholder] = 'SelectCare of Texas/Universal American' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS AL' and [SLAM Lienholder] = 'Blue Advantage Plus of AL/BCBS AL' then 'No change, no issue'
 					When [COL Lienholder] = 'CareMore Health Plan' and [SLAM Lienholder] = 'CareMore Health Plan/Anthem' then 'No change, no issue'
-					When [COL Lienholder] = 'Department of VA Office of General Counsel' and [SLAM Lienholder] = 'Department of Veterans Affairs Office of General Counsel 02 National Collections Group' then 'No change, no issue'
+					When [COL Lienholder] like 'Department of VA%' and [SLAM Lienholder] like 'Department of Veterans Affairs%' then 'No change, no issue'
 					When [COL Lienholder] = 'MA Medicaid' and [SLAM Lienholder] = 'MA Medicaid ' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS of MN' and [SLAM Lienholder] = 'BCBS MN' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS Massachusetts' and [SLAM Lienholder] = 'BCBS of MA' then 'No change, no issue'
-					When [COL Lienholder] = 'Trillium Community Health Plan (OR CCO)' and [SLAM Lienholder] = 'Trillium Community Health Plan (OR CCO)/Centene' then 'No change, no issue'
 					When [COL Lienholder] = 'Blue Care Network' and [SLAM Lienholder] = 'Blue Care Network ' then 'No change, no issue'
 					When [COL Lienholder] = 'Nassau County - NY Medicaid - TA' and [SLAM Lienholder] = 'Nassau County - NY Medicaid - Temporary Assistance' then 'No change, no issue'
 					When [COL Lienholder] = 'UnitedHealthcare Community Plan' and [SLAM Lienholder] = 'United Healthcare Community Plan' then 'No change, no issue'
-					When [COL Lienholder] = 'Aetna HMO, Inc.' and [SLAM Lienholder] = 'Aetna - PLRP' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS of Michigan' and [SLAM Lienholder] = 'BCBS of Michigan (Direct)' then 'No change, no issue'
 					When [COL Lienholder] = 'NY Medicaid - Cayunga County' and [SLAM Lienholder] = 'NY Medicaid - Cayuga County' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (USAF) - Langley AFB' and [SLAM Lienholder] = 'Department of the Air Force' then 'No change, no issue'
-					When [COL Lienholder] = 'General Motors LLC' and [SLAM Lienholder] = 'General Motors, LLC Health Plan' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare / USAF' and [SLAM Lienholder] = 'Department of the Air Force' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS of AR' and [SLAM Lienholder] = 'BCBS AR' then 'No change, no issue'
-					When [COL Lienholder] = 'Aetna Better Health F.K.A. Coventry Care (KY MCO)' and [SLAM Lienholder] = 'Aetna Better Health F.K.A.  Coventry Care (KY MCO) ' then 'No change, no issue'
 					When [COL Lienholder] = 'Independent Health Association' and [SLAM Lienholder] = 'Independent Health Association ' then 'No change, no issue'
-					When [COL Lienholder] = 'Walmart Stores Associates Health and Welfare' and [SLAM Lienholder] = 'Walmart Stores, Inc. Associates Health and Welfare Plan' then 'No change, no issue'
-					When [COL Lienholder] = 'Walmart Stores, Inc. Associates H&W Plan' and [SLAM Lienholder] = 'Walmart Stores, Inc. Associates Health and Welfare Plan' then 'No change, no issue'
-					When [COL Lienholder] = 'CHAMPVA' and [SLAM Lienholder] = 'CHAMPVA - Region 14' then 'No change, no issue'
-					When [COL Lienholder] = 'Tufts Associated HMO/Network Health' and [SLAM Lienholder] = 'Tufts Associated Health Maintenance Organization' then 'No change, no issue'
-					When [COL Lienholder] = 'Molina Medicare Options Plus' and [SLAM Lienholder] = 'Molina Medicare' then 'No change, no issue'
+					When [COL Lienholder] like '%Walmart%' and [SLAM Lienholder] like '%Walmart%' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS OK' and [SLAM Lienholder] = 'BCBS OK/HCSC' then 'No change, no issue'
 					When [COL Lienholder] = 'Arizona Physicians IPA Inc.' and [SLAM Lienholder] = 'Arizona Physicians IPA Inc/UHC' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (USAF) - Region 6' and [SLAM Lienholder] = 'Department of the Air Force' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (Army) - Ft. Carson' and [SLAM Lienholder] = 'Department of the Army' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (Army) - Ft. Irwin' and [SLAM Lienholder] = 'Department of the Army' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS of Texas' and [SLAM Lienholder] = 'BCBS TX/HCSC' then 'No change, no issue'
 					When [COL Lienholder] = 'Health Advantage' and [SLAM Lienholder] = 'Health Advantage/BCBS AR' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS MA' and [SLAM Lienholder] = 'BCBS of MA' then 'No change, no issue'
-					When [COL Lienholder] = 'BCBS of AR' and [SLAM Lienholder] = 'Walmart Stores, Inc. Associates Health and Welfare Plan' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (USAF) - Region 4' and [SLAM Lienholder] = 'Department of the Air Force' then 'No change, no issue'
 					When [COL Lienholder] = 'NY Medicaid - NYC County' and [SLAM Lienholder] = 'NY Medicaid - NYC' then 'No change, no issue'
-					When [COL Lienholder] = 'Walmart Associates Health' and [SLAM Lienholder] = 'Walmart Stores, Inc. Associates Health and Welfare Plan' then 'No change, no issue'
 					When [COL Lienholder] = 'IHS - Cherokee Nation' and [SLAM Lienholder] = 'IHS - Cherokee Nation ' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (Army) - Ft. Benning' and [SLAM Lienholder] = 'Department of the Army' then 'No change, no issue'
 					When [COL Lienholder] = 'Mercy Health Plans of MO (Part C)' and [SLAM Lienholder] = 'Mercy Health Plans' then 'No change, no issue'
-					When [COL Lienholder] = 'Aetna' and [SLAM Lienholder] = 'Aetna - PLRP' then 'No change, no issue'
 					When [COL Lienholder] = 'Preferred Care Partners' and [SLAM Lienholder] = 'Preferred Care Partners/UHC' then 'No change, no issue'
 					When [COL Lienholder] = 'Akamai Advantage' and [SLAM Lienholder] = 'Akamai Advantage/HMSA' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (Army) - Fort Polk' and [SLAM Lienholder] = 'Department of the Army' then 'No change, no issue'
-					When [COL Lienholder] = 'Vista Health Plan of South Florida' and [SLAM Lienholder] = 'Vista Health Plan of South Florida/Coventry' then 'No change, no issue'
-					When [COL Lienholder] = 'Anthem BCBS' and [SLAM Lienholder] = 'Anthem BCBS/Wellpoint' then 'No change, no issue'
-					When [COL Lienholder] = 'Kaiser' and [SLAM Lienholder] = 'Kaiser Foundation Health Plan' then 'No change, no issue'
+					When [COL Lienholder] like '%Vista%' and [SLAM Lienholder] like '%Vista%' then 'No change, no issue'
+					When [COL Lienholder] like '%Anthem%' and [SLAM Lienholder] like '%Anthem%' then 'No change, no issue'
 					When [COL Lienholder] = 'Louisiana Healthcare Connections (LA MCO)' and [SLAM Lienholder] = 'Louisiana Healthcare Connections (LA MCO)/Centene' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (Army) - Ft. Bragg' and [SLAM Lienholder] = 'Department of the Army' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS IL' and [SLAM Lienholder] = 'BCBS IL/HCSC' then 'No change, no issue'
-					When [COL Lienholder] = 'OK Medicaid' and [SLAM Lienholder] = 'OK Medicaid - Conduent' then 'No change, no issue'
 					When [COL Lienholder] = 'CareFirst' and [SLAM Lienholder] = 'CareFirst (PLRP)' then 'No change, no issue'
-					When [COL Lienholder] = 'Magnolia Health Plan (MS CCO)' and [SLAM Lienholder] = 'Magnolia Health Plan (MS MCO)/Centene' then 'No change, no issue'
+					When [COL Lienholder] like '%Magnolia Health Plan%' and [SLAM Lienholder] like '%Magnolia Health Plan%' then 'No change, no issue'
 					When [COL Lienholder] = 'PHP (MI MCO)' and [SLAM Lienholder] = 'Physicians Health Plan Mid MI (MI MCO)' then 'No change, no issue'
 					When [COL Lienholder] = 'Meridian (MI MCO)' and [SLAM Lienholder] = 'Meridian Health Plan' then 'No change, no issue'
 					When [COL Lienholder] = 'Passport Advantage' and [SLAM Lienholder] = 'Passport' then 'No change, no issue'
-					When [COL Lienholder] = 'CoventryCares of Kentucky' and [SLAM Lienholder] = 'Aetna Better Health F.K.A.  Coventry Care (KY MCO) ' then 'No change, no issue'
 					When [COL Lienholder] = 'Kentucky Passport Health Plan' and [SLAM Lienholder] = 'Passport (KY MCO)' then 'No change, no issue'
-					When [COL Lienholder] = 'United Healthcare' and [SLAM Lienholder] = 'United Healthcare Plan of the River Valley, Inc.' then 'No change, no issue'
 					When [COL Lienholder] = 'Health Options Inc.' and [SLAM Lienholder] = 'Health Options Inc. ' then 'No change, no issue'
-					When [COL Lienholder] = 'Tufts' and [SLAM Lienholder] = 'Tufts Associated Health Maintenance Organization' then 'No change, no issue'
 					When [COL Lienholder] = 'SelectHealth Advantage' and [SLAM Lienholder] = 'Select Health Advantage' then 'No change, no issue'
 					When [COL Lienholder] = 'NY Medicaid-Schenectady' and [SLAM Lienholder] = 'NY Medicaid - Schenectady ' then 'No change, no issue'
 					When [COL Lienholder] = 'NY Medicaid - Schenectady Temp. Assistance' and [SLAM Lienholder] = 'Schenectady County - NY Medicaid - Temporary Assistance' then 'No change, no issue'
-					When [COL Lienholder] = 'Aetna Better Health FKA Coventry Care (KY MCO)' and [SLAM Lienholder] = 'Aetna Better Health F.K.A.  Coventry Care (KY MCO) ' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare Army - Ft. Rucker' and [SLAM Lienholder] = 'Department of the Army' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (USAF) - Region 5' and [SLAM Lienholder] = 'Department of the Air Force' then 'No change, no issue'
 					When [COL Lienholder] = 'Michigan Council of Carpenters Health & Welfare' and [SLAM Lienholder] = 'Michigan Regional Council of Carpenters Health & Welfare Fund' then 'No change, no issue'
 					When [COL Lienholder] = 'Moda (OR CCO)' and [SLAM Lienholder] = 'Moda/Eastern Oregon (OR CCO)' then 'No change, no issue'
 					When [COL Lienholder] = 'Capital District Physicians Health Plan' and [SLAM Lienholder] = 'Capital District Physicians Health Plan ' then 'No change, no issue'
 					When [COL Lienholder] = 'Albany County - NY Medicaid - Temp Assistance' and [SLAM Lienholder] = 'Albany County - NY Medicaid - Temporary Assistance' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS South Carolina' and [SLAM Lienholder] = 'BCBS SC' then 'No change, no issue'
 					When [COL Lienholder] = 'Military/IHS' and [SLAM Lienholder] = 'Department of the Army' then 'No change, no issue'
-					When [COL Lienholder] = 'Department of the Air Force/Tricare' and [SLAM Lienholder] = 'Department of the Air Force' then 'No change, no issue'
-					When [COL Lienholder] = 'Department of Veterans Affairs - Region 16' and [SLAM Lienholder] = 'Department of Veterans Affairs' then 'No change, no issue'
-					When [COL Lienholder] = 'Central States, Southeast and Southwest Area H&W' and [SLAM Lienholder] = 'Central States, Southeast and Southwest Area Health and Welfare Fund' then 'No change, no issue'
-					When [COL Lienholder] = 'Chautauqua County - NY Medicaid - TA' and [SLAM Lienholder] = 'Chautauqua County - NY Medicaid - Temporary Assistance' then 'No change, no issue'
+					When [COL Lienholder] like 'Central States%' and [SLAM Lienholder] like 'Central States%' then 'No change, no issue'
 					When [COL Lienholder] = 'Washington County - NY Medicaid - TA' and [SLAM Lienholder] = 'Washington County - NY Medicaid - Temporary Assistance' then 'No change, no issue'
-					When [COL Lienholder] = 'Medical Health Insuring Corp (OH MCO)' and [SLAM Lienholder] = 'Medical Health Insuring Corp (OH MCO)/Medical Mutual of Ohio' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS AZ' and [SLAM Lienholder] = 'BCBS AZ (PLRP)' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS of Alabama' and [SLAM Lienholder] = 'BCBS AL' then 'No change, no issue'
-					When [COL Lienholder] = 'Medical Mutual of Ohio (MMOH)' and [SLAM Lienholder] = 'Medical Mutual of Ohio' then 'No change, no issue'
+					When [COL Lienholder] like 'Medical Mutual of Ohio%' and [SLAM Lienholder] like 'Medical Mutual of Ohio%' then 'No change, no issue'
 					When [COL Lienholder] = 'Chrysler Group LLC' and [SLAM Lienholder] = 'Chrysler Group, LLC' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS Minnesota' and [SLAM Lienholder] = 'BCBS MN' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (Navy) - Norfolk' and [SLAM Lienholder] = 'Department of the Navy' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (Army) - Arizona' and [SLAM Lienholder] = 'Department of the Army' then 'No change, no issue'
-					When [COL Lienholder] = 'Trillium Community Health Plan' and [SLAM Lienholder] = 'Trillium Community Health Plan (OR CCO)/Centene' then 'No change, no issue'
-					When [COL Lienholder] = 'Department of the Army' and [SLAM Lienholder] = 'Department of the Army ' then 'No change, no issue'
+					When [COL Lienholder] like 'Trillium Community Health Plan%' and [SLAM Lienholder] like 'Trillium Community Health Plan%' then 'No change, no issue'
 					When [COL Lienholder] = 'IHS - Seneca Nation Lionel R. John Health Center' and [SLAM Lienholder] = 'Indian Health Services - Seneca Nation Lionel R. John Health Center' then 'No change, no issue'
-					When [COL Lienholder] = 'Department of Veterans Affairs - Region 13' and [SLAM Lienholder] = 'Department of Veterans Affairs Office of General Counsel 02 National Collections Group' then 'No change, no issue'
+					When [COL Lienholder] like 'Department of Veterans Affairs%' and [SLAM Lienholder] like 'Department of Veterans Affairs%' then 'No change, no issue'
 					When [COL Lienholder] = 'Humana Caresource (KY MCO)' and [SLAM Lienholder] = 'Caresource (KY MCO)' then 'No change, no issue'
-					When [COL Lienholder] = 'Magnolia Health Plan (MS MCO)' and [SLAM Lienholder] = 'Magnolia Health Plan (MS MCO)/Centene' then 'No change, no issue'
-					When [COL Lienholder] = 'Walmart Stores, Inc. Associates Health' and [SLAM Lienholder] = 'Walmart Stores, Inc. Associates Health and Welfare Plan' then 'No change, no issue'
 					When [COL Lienholder] = 'Indian Health Services Pascua Yaqui Health Center' and [SLAM Lienholder] = 'Indian Health Services - Pascua Yaqui Health Center' then 'No change, no issue'
-					When [COL Lienholder] = 'WellCare (KY MCO)' and [SLAM Lienholder] = 'Wellcare - PLRP' then 'No change, no issue'
+					When [COL Lienholder] like '%WellCare%' and [SLAM Lienholder] like '%WellCare%' then 'No change, no issue'
 					When [COL Lienholder] = 'Providence Health Plan' and [SLAM Lienholder] = 'Providence Health Assurance' then 'No change, no issue'
-					When [COL Lienholder] = 'Medical Mutual of Ohio' and [SLAM Lienholder] = 'Medical Mutual of Ohio (MMOH) - PLRP' then 'No change, no issue'
 					When [COL Lienholder] = 'IHS - Salina A-Mo Community Clinic' and [SLAM Lienholder] = 'IHS - Salina A-Mo Community Clinic ' then 'No change, no issue'
 					When [COL Lienholder] = 'BlueCross BlueShield of Tennessee Plan Members' and [SLAM Lienholder] = 'BCBS TN' then 'No change, no issue'
 					When [COL Lienholder] = 'Deseret Mutual' and [SLAM Lienholder] = 'Deseret Healthcare' then 'No change, no issue'
 					When [COL Lienholder] = 'Select Health' and [SLAM Lienholder] = 'SelectHealth' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare for Life' and [SLAM Lienholder] = 'Tricare (Main)' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS TX' and [SLAM Lienholder] = 'BCBS TX/HCSC' then 'No change, no issue'
 					When [COL Lienholder] = 'Health Care Service Corporation' and [SLAM Lienholder] = 'HCSC' then 'No change, no issue'
 					When [COL Lienholder] = 'Community Health Plan of Washington' and [SLAM Lienholder] = 'Community Health Plan (WA MCO)' then 'No change, no issue'
-					When [COL Lienholder] = 'CIGNA HealthCare' and [SLAM Lienholder] = 'Cigna ' then 'No change, no issue'
-					When [COL Lienholder] = 'Coventry' and [SLAM Lienholder] = 'Coventry Health' then 'No change, no issue'
-					When [COL Lienholder] = 'Medical Mutual of Ohio (MMOH)' and [SLAM Lienholder] = 'Medical Mutual of Ohio (MMOH) - PLRP' then 'No change, no issue'
+					When [COL Lienholder] like '%Coventry%' and [SLAM Lienholder] like '%Coventry%' then 'No change, no issue'
 					When [COL Lienholder] = 'Jackson Care Connect' and [SLAM Lienholder] = 'Jackson Care Connect (OR CCO)' then 'No change, no issue'
-					When [COL Lienholder] = 'Department of VA - Office of Regional Counsel' and [SLAM Lienholder] = 'Department of Veterans Affairs' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (Army) - Ft. Stewart' and [SLAM Lienholder] = 'Department of the Army' then 'No change, no issue'
 					When [COL Lienholder] = 'UnitedHealthcare Services' and [SLAM Lienholder] = 'United Healthcare (PLRP)' then 'No change, no issue'
 					When [COL Lienholder] = 'Presbyterian Senior Care HMO' and [SLAM Lienholder] = 'Presbyterian Senior Care (HMO)' then 'No change, no issue'
 					When [COL Lienholder] = 'United Health Care (LA MCO)' and [SLAM Lienholder] = 'United Healthcare (LA MCO)' then 'No change, no issue'
-					When [COL Lienholder] = 'Vista Healthplan' and [SLAM Lienholder] = 'Vista Healthplan/Coventry' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (Navy) - Pensacola' and [SLAM Lienholder] = 'Department of the Navy' then 'No change, no issue'
 					When [COL Lienholder] = 'Bayou Health Plan (LA MCO)' and [SLAM Lienholder] = 'United Healthcare (LA MCO)' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (USAF)' and [SLAM Lienholder] = 'Department of the Air Force' then 'No change, no issue'
-					When [COL Lienholder] = 'Kaiser' and [SLAM Lienholder] = 'Kaiser Permanente' then 'No change, no issue'
+					When [COL Lienholder] = '%USAF%' and [SLAM Lienholder] = 'Department of the Air Force' then 'No change, no issue'
 					When [COL Lienholder] = 'Wellmark' and [SLAM Lienholder] = 'Wellmark Health Plan' then 'No change, no issue'
 					When [COL Lienholder] = 'Coordinated Care Corporation (WA MCO)' and [SLAM Lienholder] = 'Coordinated Care Corporation/Centene (WA MCO)' then 'No change, no issue'
 					When [COL Lienholder] = 'Unicare Life & Health Insurance Company' and [SLAM Lienholder] = 'Unicare/Anthem Wellpoint' then 'No change, no issue'
 					When [COL Lienholder] = 'Transamerica - Monumental Life' and [SLAM Lienholder] = 'Transamerica Medicare Supplement Plan' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS of Illinois' and [SLAM Lienholder] = 'BCBS IL/HCSC' then 'No change, no issue'
 					When [COL Lienholder] = 'Selectcare Health Plans' and [SLAM Lienholder] = 'Selectcare Health Plans/WellCare' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (Army) - Ft. Meade' and [SLAM Lienholder] = 'Department of the Army' then 'No change, no issue'
 					When [COL Lienholder] = 'Monarch HealthCare' and [SLAM Lienholder] = 'Monarch HealthCare ' then 'No change, no issue'
-					When [COL Lienholder] = 'New York State Catholic Health Plan (Fidelis Care)' and [SLAM Lienholder] = 'Fidelis Care (New York State Catholic Health Plan )' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare - Army (Ft. Gordon)' and [SLAM Lienholder] = 'Department of the Army' then 'No change, no issue'
+					When [COL Lienholder] like '%Fidelis%' and [SLAM Lienholder] like '%Fidelis%' then 'No change, no issue'
 					When [COL Lienholder] = 'BlueCross BlueShield of Tennessee' and [SLAM Lienholder] = 'BCBS TN' then 'No change, no issue'
-					When [COL Lienholder] = 'TX DADS' and [SLAM Lienholder] = 'Texas Department of Aging and Disability Services' then 'No change, no issue'
-					When [COL Lienholder] = 'Wellcare' and [SLAM Lienholder] = 'Wellcare - PLRP' then 'No change, no issue'
+					When [COL Lienholder] like '%DADS' and [SLAM Lienholder] = 'Texas Department of Aging and Disability Services' then 'No change, no issue'
 					When [COL Lienholder] = 'Harris County Hospital District' and [SLAM Lienholder] = 'Harris County Hospital District ' then 'No change, no issue'
-					When [COL Lienholder] = 'Magnolia Health Plan, INC' and [SLAM Lienholder] = 'Magnolia Health Plan (MS MCO)/Centene' then 'No change, no issue'
 					When [COL Lienholder] = 'McLaren Advantage' and [SLAM Lienholder] = 'McLaren Health Care' then 'No change, no issue'
 					When [COL Lienholder] = 'Michigan Medicaid' and [SLAM Lienholder] = 'MI Medicaid' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS of MN' and [SLAM Lienholder] = 'BCBS/Blue Plus MN (MN MCO)' then 'No change, no issue'
@@ -1200,59 +1179,38 @@ From (
 					When [COL Lienholder] = 'Managed Health Services (IN MCO)' and [SLAM Lienholder] = 'Managed Health Services (IN MCO)/Centene' then 'No change, no issue'
 					When [COL Lienholder] = 'HCA Inc. Medical Plan' and [SLAM Lienholder] = 'HCA, Inc. Medical Plan' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS Vermont' and [SLAM Lienholder] = 'BCBS VT' then 'No change, no issue'
-					When [COL Lienholder] = 'United Healthcare Community Plan of Ohio (OH MCO)' and [SLAM Lienholder] = 'United Healthcare Community Plan of Ohio (aka Unison) (OH MCO)' then 'No change, no issue'
 					When [COL Lienholder] = 'Beau Rivage Resorts, Inc.' and [SLAM Lienholder] = 'Beau Rivage Resorts' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (USAF) - Region 8' and [SLAM Lienholder] = 'Department of the Air Force' then 'No change, no issue'
-					When [COL Lienholder] = 'NY State Catholic Health Plan (Fidelis Care)' and [SLAM Lienholder] = 'Fidelis Care (New York State Catholic Health Plan )' then 'No change, no issue'
 					When [COL Lienholder] = 'HealthLink' and [SLAM Lienholder] = 'HealthLink/Anthem Wellpoint' then 'No change, no issue'
 					When [COL Lienholder] = 'Tricare - Airforce' and [SLAM Lienholder] = 'Department of the Air Force' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (Navy)' and [SLAM Lienholder] = 'Department of the Navy' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare' and [SLAM Lienholder] = 'Tricare (Main)' then 'No change, no issue'
+					When [COL Lienholder] = 'Tricare (Navy)%' and [SLAM Lienholder] = 'Department of the Navy' then 'No change, no issue'
+					When ([COL Lienholder] = 'Tricare for Life' or [COL Lienholder] = 'Tricare') and [SLAM Lienholder] = 'Tricare (Main)' then 'No change, no issue'
 					When [COL Lienholder] = 'Employers & Operating Engineers Local 520 H&W Fund' and [SLAM Lienholder] = 'Employers & Operating Engineers Local 520 Health & Welfare Trust Fund' then 'No change, no issue'
 					When [COL Lienholder] = 'WPS Health Insurance' and [SLAM Lienholder] = 'WPS Health Solutions' then 'No change, no issue'
 					When [COL Lienholder] = 'BlueCross BlueShield of TN Plan Members-Mesh' and [SLAM Lienholder] = 'BCBS TN' then 'No change, no issue'
 					When [COL Lienholder] = 'Buckeye Health Plan' and [SLAM Lienholder] = 'Buckeye Health Plan/Centene' then 'No change, no issue'
-					When [COL Lienholder] = 'Department of the Army (Ft. Carson)' and [SLAM Lienholder] = 'Department of the Army' then 'No change, no issue'
-					When [COL Lienholder] = 'Geisinger Health Plan' and [SLAM Lienholder] = 'Geisinger Family Health Plan' then 'No change, no issue'
-					When [COL Lienholder] = 'Sterling Life/Windsor Health Plan' and [SLAM Lienholder] = 'WellCare/Windsor Health Plan' then 'No change, no issue'
-					When [COL Lienholder] = 'TX-DADS' and [SLAM Lienholder] = 'Texas Department of Aging and Disability Services' then 'No change, no issue'
-					When [COL Lienholder] = 'Anthem BCBS/Wellpoint' and [SLAM Lienholder] = 'Anthem Blue Cross Blue Shield' then 'No change, no issue'
+					When [COL Lienholder] like 'Geisinger%' and [SLAM Lienholder] like 'Geisinger%' then 'No change, no issue'
+					When [COL Lienholder] like '%Windsor%' and [SLAM Lienholder] like '%Windsor%' then 'No change, no issue'
 					When [COL Lienholder] = 'Military/IHS' and [SLAM Lienholder] = 'Military/Indian Health Services' then 'No change, no issue'
-					When [COL Lienholder] = 'Central States, SE & SW Area H&W Fund' and [SLAM Lienholder] = 'Central States, Southeast and Southwest Area Health and Welfare Fund' then 'No change, no issue'
-					When [COL Lienholder] = 'Central States, SE, SW Area Health & Welfare Fund' and [SLAM Lienholder] = 'Central States, Southeast and Southwest Area Health and Welfare Fund' then 'No change, no issue'
 					When [COL Lienholder] = 'NY Medicaid - Onondaga' and [SLAM Lienholder] = 'NY Medicaid - Onondaga County' then 'No change, no issue'
-					When [COL Lienholder] = 'NY Medicaid - Onondaga (TA lien)' and [SLAM Lienholder] = 'Onondaga County - NY Medicaid - Temporary Assistance' then 'No change, no issue'
+					When ([COL Lienholder] like 'Onondaga County - NY Mcaid - T%' or [COL Lienholder] = 'NY Medicaid - Onondaga (TA lien)') and [SLAM Lienholder] like 'Onondaga County - NY Medicaid - T%' then 'No change, no issue'
 					When [COL Lienholder] = 'QualChoice of Arkansas' and [SLAM Lienholder] = 'QualChoice of Arkansas, Inc.' then 'No change, no issue'
-					When [COL Lienholder] = 'Department of Veterans Affairs - Region 8' and [SLAM Lienholder] = 'Department of Veterans Affairs' then 'No change, no issue'
-					When [COL Lienholder] = 'Onondaga County - NY Mcaid - Temp Assistance' and [SLAM Lienholder] = 'Onondaga County - NY Medicaid - Temporary Assistance' then 'No change, no issue'
-					When [COL Lienholder] = 'Aetna, Inc.' and [SLAM Lienholder] = 'Aetna - PLRP' then 'No change, no issue'
 					When [COL Lienholder] = 'Superior Health Plan' and [SLAM Lienholder] = 'Superior Health Plan/Centene' then 'No change, no issue'
-					When [COL Lienholder] = 'Molina Healthcare of Washington (Part C)' and [SLAM Lienholder] = 'Molina Healthcare of Washington' then 'No change, no issue'
 					When [COL Lienholder] = 'Sierra Health and Life Insurance Company' and [SLAM Lienholder] = 'Sierra Health and Life Insurance Company/United Healthcare' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS ND' and [SLAM Lienholder] = 'BCBS ND (Noridian)' then 'No change, no issue'
 					When [COL Lienholder] = 'HCA' and [SLAM Lienholder] = 'HCA, Inc. Medical Plan' then 'No change, no issue'
-					When [COL Lienholder] = 'Walmart Associates Health Welfare Plan' and [SLAM Lienholder] = 'Walmart Stores, Inc. Associates Health and Welfare Plan' then 'No change, no issue'
 					When [COL Lienholder] = 'Blue Cross of Minnesota Plan Members-Mesh' and [SLAM Lienholder] = 'BCBS MN' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS/Blue Plus MN (MN MCO)' and [SLAM Lienholder] = 'BCBS MN' then 'No change, no issue'
 					When [COL Lienholder] = 'IHS - Pascua Yaqui Health Center' and [SLAM Lienholder] = 'Indian Health Services - Pascua Yaqui Health Center' then 'No change, no issue'
-					When [COL Lienholder] = 'Department of Veterans Affairs' and [SLAM Lienholder] = 'Department of Veterans Affairs ' then 'No change, no issue'
-					When [COL Lienholder] = 'ChampVA' and [SLAM Lienholder] = 'ChampVA (Use this one for NEW Requests)' then 'No change, no issue'
-					When [COL Lienholder] = 'Molina Healthcare of WA' and [SLAM Lienholder] = 'Molina Healthcare of Washington' then 'No change, no issue'
+					When [COL Lienholder] like '%ChampVA%' and [SLAM Lienholder] like '%ChampVA%' then 'No change, no issue'
+					When [COL Lienholder] like 'Molina%' and [SLAM Lienholder] like 'Molina%' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS NM' and [SLAM Lienholder] = 'BCBS NM/HCSC' then 'No change, no issue'
 					When [COL Lienholder] = 'MGM Resorts International' and [SLAM Lienholder] = 'MGM Resorts International ' then 'No change, no issue'
 					When [COL Lienholder] like '%Affairs Region - 22' and [SLAM Lienholder] = 'Department of Veterans Affairs Region - 22' then 'No change, no issue'
 					When [COL Lienholder] = 'Jefferson County - NY Medicaid (TA)' and [SLAM Lienholder] = 'Jefferson County - NY Medicaid - Temporary Assistance' then 'No change, no issue'
 					When [COL Lienholder] = 'Veterans Affairs - Louisville Regional Office' and [SLAM Lienholder] = 'Department of Veterans Affairs' then 'No change, no issue'
-					When [COL Lienholder] = 'Suffolk County - NY Medicaid Temporary Assistance' and [SLAM Lienholder] = 'Suffolk County - NY Medicaid - Temporary Assistance' then 'No change, no issue'
-					When [COL Lienholder] = 'Westchester County - NY Medicaid - TA' and [SLAM Lienholder] = 'Westchester County - NY Medicaid - Temporary Assistance' then 'No change, no issue'
-					When [COL Lienholder] = 'Geisinger Family Health Plan' and [SLAM Lienholder] = 'Geisinger Gold' then 'No change, no issue'
-					When [COL Lienholder] = 'Aetna Better Health' and [SLAM Lienholder] = 'Aetna Better Health F.K.A.  Coventry Care (KY MCO) ' then 'No change, no issue'
+					When [COL Lienholder] like 'Westchester County - NY Medicaid - T%' and [SLAM Lienholder] like 'Westchester County - NY Medicaid - T%' then 'No change, no issue'
 					When [COL Lienholder] = 'Health Partners' and [SLAM Lienholder] = 'HealthPartners' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (Army) - Ft. Hood' and [SLAM Lienholder] = 'Department of the Army' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (Army) - Western Medical Command' and [SLAM Lienholder] = 'Department of the Army' then 'No change, no issue'
 					When [COL Lienholder] = 'MCS Advantage Inc.' and [SLAM Lienholder] = 'MCS Advantage Inc./Platino' then 'No change, no issue'
-					When [COL Lienholder] = 'Onondaga County - NY Medicaid - TA' and [SLAM Lienholder] = 'Onondaga County - NY Medicaid - Temporary Assistance' then 'No change, no issue'
-					When [COL Lienholder] = 'Department of Veterans Affairs - General Counsel' and [SLAM Lienholder] = 'Department of Veterans Affairs Office of General Counsel 02 National Collections Group' then 'No change, no issue'
 					When [COL Lienholder] = 'Phoenix VA Health Care System' and [SLAM Lienholder] = 'Phoenix VA Healthcare System' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS of Oklahoma' and [SLAM Lienholder] = 'BCBS OK/HCSC' then 'No change, no issue'
 					When [COL Lienholder] = 'IHS - Phoenix Indian Medical Center' and [SLAM Lienholder] = 'Indian Health Services' then 'No change, no issue'
@@ -1261,61 +1219,36 @@ From (
 					When [COL Lienholder] = 'Tricare (Coast Guard)' and [SLAM Lienholder] = 'United States Coast Guard' then 'No change, no issue'
 					When [COL Lienholder] = 'AllCare (OR MCO)' and [SLAM Lienholder] = 'AllCare Health Plan (OR CCO) ' then 'No change, no issue'
 					When [COL Lienholder] = 'Secure Horizons' and [SLAM Lienholder] = 'Secure Horizons/UHC' then 'No change, no issue'
-					When [COL Lienholder] = 'UHC/Humana' and [SLAM Lienholder] = 'Humana' then 'No change, no issue'
-					When [COL Lienholder] = 'Aetna (KY MCO)' and [SLAM Lienholder] = 'Aetna Better Health F.K.A.  Coventry Care (KY MCO) ' then 'No change, no issue'
 					When [COL Lienholder] = 'Military/Indian Health Services' and [SLAM Lienholder] = 'Indian Health Services' then 'No change, no issue'
 					When [COL Lienholder] = 'BCBS Rhode Island' and [SLAM Lienholder] = 'BCBS RI' then 'No change, no issue'
 					When [COL Lienholder] = 'Arcadian Health' and [SLAM Lienholder] = 'Arcadia Health Solutions' then 'No change, no issue'
-					When [COL Lienholder] = 'Tricare (Army) - Ft. Jackson' and [SLAM Lienholder] = 'Department of the Army' then 'No change, no issue'
-					When [COL Lienholder] = 'Department of the Army/Tricare' and [SLAM Lienholder] = 'Department of the Army' then 'No change, no issue'
-					When [COL Lienholder] = 'United HealthCare (WA MCO)' and [SLAM Lienholder] = 'United Healthcare (PLRP)' then 'No change, no issue'
 					When [COL Lienholder] = 'Medibank' and [SLAM Lienholder] = 'Medibank ' then 'No change, no issue'
-					When [COL Lienholder] = 'Suffolk County - NY Medicaid - TA' and [SLAM Lienholder] = 'Suffolk County - NY Medicaid - Temporary Assistance' then 'No change, no issue'
-					When [COL Lienholder] = 'United Mine Workers of America Health&Retirement' and [SLAM Lienholder] = 'United Mine Workers of America Health & Retirement' then 'No change, no issue'
+					When [COL Lienholder] like 'Suffolk County - NY Medicaid - T%' and [SLAM Lienholder] like 'Suffolk County - NY Medicaid - T%' then 'No change, no issue'
 					When [COL Lienholder] = 'iCare' and [SLAM Lienholder] = 'iCare Health Solutions' then 'No change, no issue'
-					When [COL Lienholder] = 'Kaiser Foundation HP of the NW' and [SLAM Lienholder] = 'Kaiser Foundation HP ' then 'No change, no issue'
-					When [COL Lienholder] = 'Westchester County NY Medicaid - Temp Assistance' and [SLAM Lienholder] = 'Westchester County - NY Medicaid - Temporary Assistance' then 'No change, no issue'
 					When [COL Lienholder] = 'Umpua Health Alliance (OR CCO)' and [SLAM Lienholder] = 'Umpqua Health Alliance (OR CCO)' then 'No change, no issue'
 					When [COL Lienholder] = 'Citizens Choice Health Plan' and [SLAM Lienholder] = 'Citizens Choice Health Plan/Alignment Health Plan' then 'No change, no issue'
 					When [COL Lienholder] = 'Health Alliance Plan' and [SLAM Lienholder] = 'Health Alliance Plan ' then 'No change, no issue'
-					When [COL Lienholder] = 'United Healthcare Community Plan of Ohio' and [SLAM Lienholder] = 'United Healthcare Community Plan of Ohio (aka Unison) (OH MCO)' then 'No change, no issue'
-					When [COL Lienholder] like '%United Healthcare%' and [SLAM Lienholder] like '%United Healthcare%' then 'No change, no issue'
 					When [COL Lienholder] like '%aetna%' and [SLAM Lienholder] like '%aetna%' then 'No change, no issue'
 					When [COL Lienholder] like '%humana%' and [SLAM Lienholder] like '%humana%' then 'No change, no issue'
 					When [COL Lienholder] like '%BCBS MN%' and [SLAM Lienholder] like '%BCBS Minnesota%' then 'No change, no issue'
 					When [COL Lienholder] like '%BCBS Minnesota%' and [SLAM Lienholder] like '%BCBS MN%' then 'No change, no issue'
-					When [COL Lienholder] like 'United Healthcare Community Plan of Ohio' and [SLAM Lienholder] like 'United Healthcare Community Plan of Ohio (aka Unison) (OH MCO)' then 'No change, no issue'
-					When [COL Lienholder] like 'Medical Health Insuring Corp (OH MCO)' and [SLAM Lienholder] like 'Medical Health Insuring Corp (OH MCO)/Medical Mutual of Ohio' then 'No change, no issue'
-					When [COL Lienholder] like 'Tufts%' and [SLAM Lienholder] like 'Tufts%' then 'No change, no issue'
-					When [COL Lienholder] like 'Walmart Stores, Inc. Associates H&W Plan' and [SLAM Lienholder] like 'Walmart Stores, Inc. Associates Health and Welfare Plan' then 'No change, no issue'
+					When [COL Lienholder] like '%Tufts%' and [SLAM Lienholder] like '%Tufts%' then 'No change, no issue'
 					When [COL Lienholder] = 'Community Health Plan' and [SLAM Lienholder] = 'Community Health Plan (WA MCO)' then 'No change, no issue'
-					When [COL Lienholder] like '%uhc%' and [SLAM Lienholder] like '%united healthcare%' then 'No change, no issue'
-					When [COL Lienholder] = 'NY State Catholic Health Plan (Fidelis Care)' and [SLAM Lienholder] = 'New York State Catholic Health Plan (Fidelis Care)' then 'No change, no issue'
-					When [COL Lienholder] = 'Medical Health Insuring Corp/Medical Mutual' and [SLAM Lienholder] = 'Medical Health Insuring Corp (OH MCO)/Medical Mutual of Ohio' then 'No change, no issue'
+					When [COL Lienholder] like 'Medical Health Insuring Corp%' and [SLAM Lienholder] like 'Medical Health Insuring Corp%' then 'No change, no issue'
 					When [COL Lienholder] = 'Lifemasters Supported Healthcare/Staywell' and [SLAM Lienholder] = 'Lifemasters Supported Healthcare/Staywell/Wellcare' then 'No change, no issue'
-					When [COL Lienholder] = 'Central States, SE and SW Area H and W Fund' and [SLAM Lienholder] = 'Central States, Southeast and Southwest Area Health and Welfare Fund' then 'No change, no issue'
 					When [COL Lienholder] = 'Office Management & ENT Services Employees Group' and [SLAM Lienholder] = 'Office of Management and Enterprise Services Employees Group Insurance Department' then 'No change, no issue'
 					When [COL Lienholder] = 'Monroe County - Temporary Assistance' and [SLAM Lienholder] = 'Monroe County - NY Medicaid - Temporary Assistance' then 'No change, no issue'
-					When [COL Lienholder] = 'United  Workers of America Health&Retirement' and [SLAM Lienholder] = 'United Mine Workers of America Health & Retirement' then 'No change, no issue'
+					When [COL Lienholder] like '%Workers of America%' and [SLAM Lienholder] like 'United Mine Workers of America%' then 'No change, no issue'
 					When [COL Lienholder] = 'NY Medicaid - Cattaragus County' and [SLAM Lienholder] = 'NY Medicaid - Cattaraugus County' then 'No change, no issue'
-					When [COL Lienholder] = 'Chautauqua County - NY Medicaid - TA' and [SLAM Lienholder] = 'Chautauqua County - NY Medicaid - TA' then 'No change, no issue'
-					When [COL Lienholder] = 'Anthem BCMineBS/Wellpoint' and [SLAM Lienholder] = 'Anthem Blue Cross Blue Shield' then 'No change, no issue'
-					When [COL Lienholder] = '%army%' and [SLAM Lienholder] = '%army%' then 'No change, no issue'
-					When [COL Lienholder] = 'General Motors LLC' and [SLAM Lienholder] = 'General Motors LLC' then 'No change, no issue'
-					When [COL Lienholder] = 'Regence BCBS of Oregon/Utah' and [SLAM Lienholder] = 'Cambia Health Solutions/Regence' then 'No change, no issue'
+					When [COL Lienholder] like 'Chautauqua County - NY Medicaid - T%' and [SLAM Lienholder] like 'Chautauqua County - NY Medicaid - T%' then 'No change, no issue'
+					When [COL Lienholder] like '%army%' and [SLAM Lienholder] like '%army%' then 'No change, no issue'
+					When [COL Lienholder] = 'General Motors LLC' and [SLAM Lienholder] like 'General Motors%' then 'No change, no issue'
 					When [COL Lienholder] = 'Sunshine State Health Plan/Centene' and [SLAM Lienholder] = 'Sunshine Health/Centene' then 'No change, no issue'
-					When [COL Lienholder] = 'Medical Health Insuring Corp (OH MCO)' and [SLAM Lienholder] = 'Medical Health Insuring Corp (OH MCO)%' then 'No change, no issue'
-					When [COL Lienholder] = 'United Healthcare Community Plan of Ohio%' and [SLAM Lienholder] = 'United Healthcare Community Plan of Ohio%' then 'No change, no issue'
-					When ([COL Lienholder] = '%United Healthcare%' and [SLAM Lienholder] = '%United Healthcare%') or ([COL Lienholder] = 'United Healthcare' and [SLAM Lienholder] = '%UHC%') then 'No change, no issue'
-					When ([COL Lienholder] = '%UHC%' and [SLAM Lienholder] = '%United Healthcare%') or ([COL Lienholder] = '%UHC%' and [SLAM Lienholder] = '%UHC%') then 'No change, no issue'
+					When ([COL Lienholder] like '%United Healthcare%' and [SLAM Lienholder] like '%United Healthcare%') or ([COL Lienholder] like 'United Healthcare' and [SLAM Lienholder] like '%UHC%') or ([COL Lienholder] like '%UHC%' and [SLAM Lienholder] like '%United Healthcare%') or ([COL Lienholder] like '%UHC%' and [SLAM Lienholder] like '%UHC%') then 'No change, no issue'
 					When [COL Lienholder] like '%HealthSpring%' and [SLAM Lienholder] like '%HealthSpring%' then 'No change, no issue'
-					When [COL Lienholder] = '%Kaiser%' and [SLAM Lienholder] = '%Kaiser%' then 'No change, no issue'
-					When [COL Lienholder] = '%Department of VA Office of General Counsel%' and [SLAM Lienholder] = '%Department of Veterans Affairs Office of General Counsel 02 National Collections Group%' then 'No change, no issue'
-					When [COL Lienholder] = '%Suffolk County - NY Medicaid - TA%' and [SLAM Lienholder] = '%Suffolk County - NY Medicaid - Temporary Assistance%' then 'No change, no issue'
+					When [COL Lienholder] like '%Kaiser%' and [SLAM Lienholder] like '%Kaiser%' then 'No change, no issue'
 
 
-					When len([COL Lienholder]) <= 50 and [COL Lienholder] = [SLAM Lienholder] then 'No change, no issue' 
-					
 					When ([SLAM Status] is null or [SLAM Status] = 'Not Entitled') and [COL Id] is null then 'No change, no issue'
 
 					When [SLAM Lienholder] like '%placeholder%' then 'Human Intervention (fix this week) - SLAM Lienholder Name is Placeholder'
@@ -1328,8 +1261,7 @@ From (
 					When [COL Status] = 'Pending' and [SLAM OnBenefits] is null and [SLAM LienId] is null then 'Human Intervention (fix this week) - missing Lien Id'
 
 					When [COL Lienholder] <> [SLAM Lienholder] then 'Happy Path - Update Needed' 
-					--When len([SLAM Lienholder]) > 50 and [COL Lienholder] <> [SLAM Lienholder] then 'Human Intervention (fix this week) - Lienholder name mismatch, too long' 
-
+					
 					When [ThirdPartyId] is null and [SLAM Stage] is null and [SLAM Status] is null then 'Human Intervention (fix this week) - SLAM data not pulling'
 
 					When [COL Status] = 'Not Entitled' and [SLAM Status] = 'Final'  then 'Human Intervention (fix this week) - lien is not entitled in COL but mismatch in SLAM'
@@ -1343,7 +1275,7 @@ From (
 					End as [Lienholder_Check],
 
 
-			--Liens Not Pulling
+		--Liens Not Pulling
 			Case
 				When [COL Lienholder] is null and [COL LienType] is null and [COL Question #] is null and [COL Status] is null and [COL Amount] is null then 'Human Intervention (fix this week) - delete empty lien from COL'
 				When [COL LienId] is null and [Claim Ref #] is not null and [COL LienType] is not null then 'Human Intervention (fix this week) - LienId is NULL in COL'
@@ -1361,7 +1293,25 @@ From (
 				When [COL LienType] like 'Other' then 'Human Intervention (fix this week) - lientype of other'
 
 				Else 'No change, no issue'
-				End as [InSLAM_Check]
+				End as [InSLAM_Check],
+
+						
+
+			--Update Misc. Fields
+				[COL LienType] as LienType_Updated,
+				[COL LienId] as LienId_Updated,
+				[COL Question #] as QuestionNumber_Updated,
+				[COL Lienholder] as LienholderName_Updated, 
+				[COL Description] as Description_Updated,
+				[Imposed on] as ImposedOn_Updated, 
+				[Lien doclink] as LienDoclink_Updated, 
+				[Max inbound amount] as MaxInboundAmount_Updated, 
+				[Max protocol amount] as MaxProtocolAmount_Updated, 
+				[Other lien type] as OtherLienType_Updated
+
+
+				
+
 
 		From 
 			(
@@ -1369,24 +1319,21 @@ From (
 				SELECT 
 					--COL Data: CMS Tab
 							CAST(CMS.[Claim Ref #] as nvarchar) as 'Claim Ref #', CMS.[Lien Id] as 'COL LienId', CMS.[Lien type] as 'COL LienType', CMS.[Question number] as 'COL Question #',CMS.[Status] as 'COL Status', 
-							dbo.fixnumerictext(CMS.[Amount]) as 'COL Amount', CMS.[Lien holder] as 'COL Lienholder', CMS.Id as 'COL Id',
+							dbo.fixnumerictext(CMS.[Amount]) as 'COL Amount', CMS.[Lien holder] as 'COL Lienholder', CMS.Id as 'COL Id', 
+							CMS.Description as 'COL Description', CMS.[Imposed on], CMS.[Lien doclink], CMS.[Max inbound amount], CMS.[Max protocol amount], CMS.[Other lien type],
 	
 					--COL Data: LF Tab
 							LF.[Claim number] as 'COL Claim number',SE.[Firm Name] as 'COL CaseName',
 
 					--SLAM Lien Level Data
-							Liens.CaseName as 'CaseName', FPV.CaseName as 'Case Name', FPV.[ThirdPartyId] as 'ThirdPartyId', cast(Liens.[LienId] as char) as 'SLAM LienId', Liens.[COL_LienType] as 'SLAM LienType', Liens.[Question] as 'SLAM Question #', 
+							Liens.ClientId, Liens.CaseName as 'CaseName', FPV.CaseName as 'Case Name', FPV.[ThirdPartyId] as 'ThirdPartyId', cast(Liens.[LienId] as char) as 'SLAM LienId', Liens.[COL_LienType] as 'SLAM LienType', Liens.[Question] as 'SLAM Question #', 
 							Liens.[Status] as 'SLAM Status', 
 							Case
 								When len(FPV.[LienHolderName]) > 49 then left(FPV.LienHolderName, 49)
 								Else FPV.LienHolderName
 								End As 'SLAM Lienholder',
 
-								--Amount data from JB_GetClientOnBenefitSummary_JAM
-								Liens.FinalDemandAmount as 'JAM SLAM FD Amount', Liens.FinalGlobalAmount as 'JAM SLAM Global Amount', Liens.[True Final Demand] as 'SLAM Amount',
-							
-								--Amount data from JB_GetClientOnBenefitSummary_FPV
-								FPV.FinalDemandAmount as 'FPV SLAM FD Amount', FPV.FinalGlobalAmount as 'FPV SLAM Global Amount', FPV.[True Final Demand] as 'FPV SLAM True FD Amount',
+							FPV.FinalDemandAmount as 'SLAM FD Amount', FPV.FinalGlobalAmount as 'SLAM Global Amount', Liens.[True Final Demand] as 'SLAM True FD Amount',
 
 
 							FPV.[SLAM_LienType], FPV.COL_LienType as 'SLAM LienType (converted)', FPV.Stage as 'SLAM Stage', FPV.ClosedReason as 'SLAM ClosedReason', FPV.OnBenefits as 'SLAM OnBenefits',
@@ -1409,7 +1356,7 @@ From (
 								End As 'Claimant on CSR?',
 
 					--SLAM Client Level Data
-							Clients.Final as 'SLAM Final', Clients.[Truly Final?] as 'Client Truly Final'
+							Clients.Final as 'SLAM Final', Clients.[Truly Final?] as 'Client Truly Final', Clients.CaseId as 'SLAM CaseId', Clients.QuestionnaireReceived as 'SLAM Quest'
 													
 
 				FROM		CMS_Updated as CMS -- update weekly
@@ -1424,8 +1371,7 @@ From (
 							LEFT OUTER JOIN JB_BUDNSFW_Lien as BUDNSFW_Lien ON CMS.[Lien Id] = BUDNSFW_Lien.[Lien Id] -- update as needed
 
 			 ) as sub			
-	) as sub2
-""",
+	) as sub2""",
     con = engine
     )
     print('SQL query done')
@@ -1621,7 +1567,7 @@ From (
     	ud.list_intersections(lf_hp_id,cms_hi1_id,hp_hi1,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
     except UnboundLocalError:
     	pass
-    # print('Finished 1st matrix group')
+    print('Finished 1st matrix group')
 
 	## No change, no issue ##
 
@@ -1675,11 +1621,11 @@ From (
     	ud.list_intersections(lf_nc_id,cms_hi1_id,nc_hi1,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
     except UnboundLocalError:
     	pass
-    # print('Finished 2nd matrix group')
+    print('Finished 2nd matrix group')
 
 	## Human Intervention - Close in SLAM ##	
 
-	#Null CMS Liens
+	# Null CMS Liens
     try:
     	hi5_null = lf_hi5_id.intersection(cms_null_id)
     except UnboundLocalError:
@@ -1728,7 +1674,7 @@ From (
     	ud.list_intersections(lf_hi5_id,cms_hi1_id,hi5_hi1,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
     except UnboundLocalError:
     	pass
-    # print('Finished 3rd matrix group')
+    print('Finished 3rd matrix group')
 
 	## Human Intervention (fix when you can) ##	
 
@@ -1781,7 +1727,7 @@ From (
     	ud.list_intersections(lf_hi4_id,cms_hi1_id,hi4_hi1,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
     except UnboundLocalError:
     	pass
-    # print('Finished 4th matrix group')
+    print('Finished 4th matrix group')
 
 	## Human Intervention (fix this week) (If time) ##
 
@@ -1834,7 +1780,7 @@ From (
     	ud.list_intersections(lf_hi3_id,cms_hi1_id,hi3_hi1,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
     except UnboundLocalError:
     	pass
-    # print('Finished 5th matrix group')
+    print('Finished 5th matrix group')
 
 
 	## Human Intervention (fix this week) ##
@@ -1888,7 +1834,7 @@ From (
     	ud.list_intersections(lf_hi1_id,cms_hi1_id,hi1_hi1,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week)')
     except UnboundLocalError:
     	pass
-    # print('Finished 6th matrix group')
+    print('Finished 6th matrix group')
 
 	## Human Inetervention (CM) ##
 	
@@ -1941,7 +1887,7 @@ From (
     	ud.list_intersections(lf_hi2_id,cms_hi1_id,hi2_hi1,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (CM)')
     except UnboundLocalError:
     	pass
-    # print('Finished the full Intersection')
+    print('Finished the full Intersection')
 
     # These supercede all other options
 
