@@ -6,7 +6,10 @@ import numpy as np
 # my libraries
 import updatelib as ud
 
-def col_2(path, filename):
+# error handling
+#import logging
+
+def update_be(path, filename):
 
     lf_df = pd.read_excel(r'./excel_results/LF.xlsx')
     combined_df = pd.read_excel(r'./excel_results/Full_Analysis.xlsx')
@@ -41,24 +44,24 @@ def col_2(path, filename):
     final_cms = ud.add_liens(cms, version_tab, addlien_null_colid)
 
     # Update the original bulk edit with happy path info for LF tab
-    ud.update_df(lf, lf_df, hp_id_lf, 'Medicare entitled', 'Updated Mcare','Claim Ref #', 'Claim Ref #')
-    ud.update_df(lf, lf_df, hp_id_lf, 'Non plrp plan enrolled', 'Updated Non PLRP','Claim Ref #', 'Claim Ref #')
-    ud.update_df(lf, lf_df, hp_id_lf, 'Medicaid entitled', 'Updated Mcaid','Claim Ref #', 'Claim Ref #')
-    ud.update_df(lf, lf_df, hp_id_lf, 'Third party enrolled', 'Updated Third Party','Claim Ref #', 'Claim Ref #')
-    ud.update_df(lf, lf_df, hp_id_lf, 'Plrp obligation', 'Updated PLRP','Claim Ref #', 'Claim Ref #')    
-    ud.update_df(lf, lf_df, hp_id_lf, 'Holdback amount', 'SLAM HB/Updated HB','Claim Ref #', 'Claim Ref #')
+    ud.update_df(lf, lf_df, hp_id_lf, 'Medicare entitled', 'Updated Mcare','SLAM Mcare','Claim Ref #', 'Claim Ref #')
+    ud.update_df(lf, lf_df, hp_id_lf, 'Non plrp plan enrolled', 'Updated Non PLRP','SLAM Non PLRP','Claim Ref #', 'Claim Ref #')
+    ud.update_df(lf, lf_df, hp_id_lf, 'Medicaid entitled', 'Updated Mcaid','SLAM Mcaid','Claim Ref #', 'Claim Ref #')
+    ud.update_df(lf, lf_df, hp_id_lf, 'Third party enrolled', 'Updated Third Party','SLAM Third Party','Claim Ref #', 'Claim Ref #')
+    ud.update_df(lf, lf_df, hp_id_lf, 'Plrp obligation', 'Updated PLRP','SLAM PLRP','Claim Ref #', 'Claim Ref #')    
+    ud.update_df(lf, lf_df, hp_id_lf, 'Holdback amount', 'SLAM HB/Updated HB','SLAM HB','Claim Ref #', 'Claim Ref #')
 
     # Update the original bulk edit with happy path info for CMS tab
-    ud.update_df(final_cms, combined_df, hp_id_cms, 'Status', 'Updated Status','Id', 'COL Id')
-    ud.update_df(final_cms, combined_df, hp_id_cms, 'Lien type', 'SLAM LienType','Id', 'COL Id')
-    ud.update_df(final_cms, combined_df, hp_id_cms, 'Lien holder', 'SLAM Lienholder','Id', 'COL Id')
-    ud.update_dups(final_cms, combined_df, hp_id_cms,  'Amount', 'Question number',  'Updated Amount', 'SLAM Question #', 'Id', 'COL Id')
+    ud.update_df(final_cms, combined_df, hp_id_cms, 'Status', 'Updated Status','SLAM Status','Id', 'COL Id')
+    ud.update_df(final_cms, combined_df, hp_id_cms, 'Lien type', 'LienType_Updated','SLAM_LienType','Id', 'COL Id')
+    ud.update_df(final_cms, combined_df, hp_id_cms, 'Lien holder', 'LienholderName_Updated','SLAM Lienholder','Id', 'COL Id')
+    ud.update_dups(final_cms, combined_df, hp_id_cms,  'Amount', 'Question number',  'SLAM True FD Amount', 'QuestionNumber_Updated', 'Id', 'COL Id')
 
     # Update the original bulk edit with add_lien info for CMS tab
-    ud.update_df(final_cms, combined_df, al_lienid, 'Status', 'Updated Status','Lien Id', 'SLAM LienId')
-    ud.update_df(final_cms, combined_df, al_lienid, 'Lien type', 'SLAM LienType','Lien Id', 'SLAM LienId')
-    ud.update_df(final_cms, combined_df, al_lienid, 'Lien holder', 'SLAM Lienholder','Lien Id', 'SLAM LienId')
-    ud.update_dups(final_cms, combined_df, al_lienid,  'Amount', 'Question number',  'Updated Amount', 'SLAM Question #', 'Lien Id', 'SLAM LienId')
+    ud.update_df(final_cms, combined_df, al_lienid, 'Status', 'Updated Status','SLAM Status','Lien Id', 'SLAM LienId')
+    ud.update_df(final_cms, combined_df, al_lienid, 'Lien type', 'LienType_Updated','SLAM_LienType','Lien Id', 'SLAM LienId')
+    ud.update_df(final_cms, combined_df, al_lienid, 'Lien holder', 'SLAM Lienholder','SLAM Lienholder','Lien Id', 'SLAM LienId')
+    ud.update_dups(final_cms, combined_df, al_lienid,  'Amount', 'Question number',  'SLAM True FD Amount', 'SLAM Question #', 'Lien Id', 'SLAM LienId')
 
     # Add Updated DF to original wb
     wb = load_workbook(full_path)
@@ -66,6 +69,28 @@ def col_2(path, filename):
     ud.add_ws(full_path, wb, final_cms, 'CMS', 8)
 
     return print(f'Done with {filename} update')
+
+def col_2(path, filename):
+    # update this to create a log file based on the date its run
+    logg_file = open("logfile.txt", "a")
+    try:
+        update_be(path, filename)
+    except Exception as e:
+        logg_file.write("Failed to update {0}: {1}\n".format(str(filename), str(e)))
+
+#path = r'F:\Mass Tort Cases\TVM\Claims Online\Updates\2019\2019-12-02\TBU\\'
+# filename = 'AWKO2018.xlsx'
+# update_be(path, filename)
+#filename = 'BA.xlsx'
+#update_be(path, filename)
+# filename3 = 'Burnett.xlsx'
+# update_be(path, filename)
+# filename4 = 'Mostyn2017.xlsx'
+# update_be(path, filename)
+
+
+    
+    
 
 
 
