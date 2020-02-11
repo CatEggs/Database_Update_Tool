@@ -4,3 +4,4 @@ config.py
 __pycache__/
 excel_results
 log_file/
+sql.py
