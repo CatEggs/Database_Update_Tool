@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import openpyxl as op
 import itertools
+from datetime import date
 
 def make_copy(path, filename):
         obe = op.load_workbook(path + filename)
@@ -28,20 +29,19 @@ def list_intersections(list1, list2, inter_list, df, id1, col1, col2, label_valu
 def update_df(df1, df2, id_lst, col1, col2, bkup_col,id1, id2):
         # takes in 2 df and the list of ids form the happypath df 
         # as well as the name of the column that you want to update, and the column name that will be used to do the updates
-        
+        # today = date.today()
+        # today_file = "log_file\\logfile-{0}.txt".format(str(today))
+        # logg_file = open(today_file, "a")
         for id in id_lst:
                 #create a df that stores all the values of that column
                 df2_columnval = df2[df2[id2] == id][col2].values
-                df2_columnval = df2_columnval if df2_columnval  != 'No change, no issue - resolved, Q Mismatch, but HB is good' else df2[df2[id2] == id][bkup_col].values
-                # print(df2_columnval)
-                if len(df2_columnval) > 1:
-                        #print(str(id) + " is duplicate garbage")
+                df2_columnval = df2_columnval if df2_columnval.all()  != 'No change, no issue - resolved, Q Mismatch, but HB is good' else df2[df2[id2] == id][bkup_col].values
+                if len(df2_columnval) != 1:
                         pass
+                        #logg_file.write("id - {0}: Value -{1}, Col - {2}\n".format(str(id), str(df2_columnval), str(col1)))
 
                 else:
-                        #print(id)
                         row_index = df1.index[df1[id1] == id]
-                        # print(row_index)
                         # using the index(or lien id), the 1st df value is replaced by the one found in the df2_columnval 
                         df1.at[row_index, col1] = df2_columnval
 
@@ -55,7 +55,7 @@ def update_dups(df1, df2, id_lst, col1, col2, col3, col4, id1, id2):
                 df2_columnval_qnum = df2[df2[id2] == id][col4].values
                 for amt, qnum in zip(df2_columnval_amt, df2_columnval_qnum): 
                         if qnum > 5:
-                                #print(str(id) + " is duplicate garbage")
+                                #print(str(id) + " is duplicate")
                                 amt = 0
                                 row_index = df1.index[df1[id1] == id]
                                 df1.at[row_index, col1] = amt
@@ -96,22 +96,23 @@ def move_sheet(wb, from_loc = None, to_loc = None):
         sheets.insert(to_loc, sheet)
 
 
-def add_ws(path, wb, new_ws, sheetname, sheetnum):
+def add_ws(path, new_ws, sheetname, sheetnum, oldsheet):
         # Adds the updated df to the original wb. 
         # Once trusted we can remove the original df with the updated one
-
+        wb = op.load_workbook(path)
         writer = pd.ExcelWriter(path, engine = 'openpyxl')
         writer.book = wb
         writer.sheets = dict((ws.title, ws) for ws in wb.worksheets)
-        #wb.remove(wb['CMS_Third Party Liens'])
+        # print(wb.get_sheet_names())
         #wb.remove(wb['Law Firm Representation'])
 
         # Adds the new updated tab into workbook
 
         new_ws.to_excel(writer, sheet_name = sheetname, startrow = 0, startcol = 0, header = True, index = False)
         move_sheet(wb, from_loc = None, to_loc = sheetnum)
-        #rename_sheet1 = wb['LF']
-        #rename_sheet1.title = 'Law Firm Representa#tion'
+        wb.remove(wb[oldsheet])
+        rename_sheet1 = wb[sheetname]
+        rename_sheet1.title = oldsheet
         writer.save()
         writer.close()
 
@@ -165,8 +166,18 @@ def add_liens(cms, version, addliens):
                                                         .loc[lambda df: df["Question number"]>5]
         if newliens_df_backup.empty:
                 final_newlien_df = newliens_df
+                #final_newlien_df.to_excel("CMS_addlienstest.xlsx")
         else:
                 final_newlien_df = pd.concat([newliens_df,newliens_df_backup])
+                #final_newlien_df.to_excel("CMS_addlienstest_backup.xlsx")
         full_added_df = pd.concat([cms, final_newlien_df], sort=False, ignore_index=True)
+        #full_added_df.to_excel("CMS_addliens_fullyadded.xlsx")
         #final_cms_df = full_added_df.drop(columns = ['Unnamed: 0', 'FirstName',	'LastName',	'COL Claim Number',	'COL Attorney',	'COL Case Name', 'COL Payment Group',	'Claim Status',	'S3 Client Id',	'SLAM ThirdPartyId',	'SLAM CaseName',	'SLAM CaseId',	'Claimant in SLAM correctly?',	'Current Escrow',	'Claimant on CSR?_x',	'Escrow Analysis',	'#Problems',	'Bad List Note',	'#Prob Notes',	'BUDNSFW_ClientIssue',	'Misc. Issues',	'COL SA',	'SLAM SA',	'SA Matches?',	'COL SSN',	'SLAM SSN',	'SSN Matches?',	'SSN Research',	'Final (SLAM Summary)',	'SLAM Finalized Status Id',	'Truly Final/FinalizedStatusId Issue?',	'SLAM Client Funded',	'Completed by GRG HB Report?',	'Updated SLAM Final',	'SLAM Quest Recd',	'Electronic Release Date',	'Paper Release Date',	'Updated Release Date',	'Release Returned?',	'Rules for Q2, Q4, Questionnaire, Release',	'Should we update?',	'COL Mcare',	'COL Non PLRP',	'COL Mcaid',	'COL Third Party',	'COL PLRP',	'SLAM Mcare',	'SLAM Non PLRP',	'SLAM Mcaid',	'SLAM Third Party',	'SLAM PLRP',	'Update Questions?',	'Updated Mcare',	'Updated Non PLRP',	'Updated Mcaid',	'Updated Third Party',	'Updated PLRP',	'COL HB',	'SLAM HB',	'Update HB?',	'SLAM HB/Updated HB',	'Initial_LF_Label',	'LF_Label',	'COL LienId',	'COL LienType',	'COL Question #',	'COL Status',	'COL Amount',	'COL Lienholder',	'COL Id',	'COL Description', 'COL Claim number',	'COL CaseName',	'ClientId',	'CaseName',	'Case Name',	'ThirdPartyId',	'SLAM LienType',	'SLAM Status',	'SLAM Lienholder',	'SLAM FD Amount',	'SLAM Global Amount',	'SLAM_LienType',	'SLAM LienType (converted)',	'SLAM Stage',	'SLAM ClosedReason',	'SLAM OnBenefits',	'Prob_Issue',	'Prob_Notes',	'BUDNSFW_ClientIssue_CMS',	'BUDNSFW_LienIssue',	'Current_Escrow',	'Percent Escrow Remaining',	'Claimant on CSR?_y',	'SLAM Final',	'Client Truly Final',	'Prob_Check',	'ThirdPartyId_Match?',	'New Liens?',	'Status_Check',	'LienType_Check',	'LienId_Check',	'Amount_Check',	'Updated Amount',	'Question_#_Check',	'Lienholder_Check',	'InSLAM_Check',	'LienId_Updated',	'QuestionNumber_Updated',	'Description_Updated',	'ImposedOn_Updated',	'LienDoclink_Updated',	'MaxInboundAmount_Updated',	'MaxProtocolAmount_Updated',	'OtherLienType_Updated',	'Initial_CMS_Label',	'CMS_Label'])
         return(full_added_df)
+
+# full_path = r'F:\Mass Tort Cases\TVM\Claims Online\Updates\2019\2019_12_30\\LPM2.xlsx'
+# cms = pd.read_excel(full_path,  sheet_name = 'CMS_Third Party Liens')
+# lf = pd.read_excel(full_path,  sheet_name = 'Law Firm Representation')
+# version_tab = pd.read_excel(full_path,  sheet_name = 'Version')
+# addliens = pd.read_excel(r'./excel_results/NewLiens.xlsx')
+# add_liens(cms,version_tab,addliens)
