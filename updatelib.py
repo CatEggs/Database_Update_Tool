@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import openpyxl as op
 import itertools
-from datetime import date
+
 
 def make_copy(path, filename):
         obe = op.load_workbook(path + filename)
@@ -29,16 +29,13 @@ def list_intersections(list1, list2, inter_list, df, id1, col1, col2, label_valu
 def update_df(df1, df2, id_lst, col1, col2, bkup_col,id1, id2):
         # takes in 2 df and the list of ids form the happypath df 
         # as well as the name of the column that you want to update, and the column name that will be used to do the updates
-        # today = date.today()
-        # today_file = "log_file\\logfile-{0}.txt".format(str(today))
-        # logg_file = open(today_file, "a")
+
         for id in id_lst:
                 #create a df that stores all the values of that column
                 df2_columnval = df2[df2[id2] == id][col2].values
                 df2_columnval = df2_columnval if df2_columnval.all()  != 'No change, no issue - resolved, Q Mismatch, but HB is good' else df2[df2[id2] == id][bkup_col].values
                 if len(df2_columnval) != 1:
                         pass
-                        #logg_file.write("id - {0}: Value -{1}, Col - {2}\n".format(str(id), str(df2_columnval), str(col1)))
 
                 else:
                         row_index = df1.index[df1[id1] == id]
