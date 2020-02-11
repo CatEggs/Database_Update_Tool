@@ -99,5 +99,5 @@ def col_3(path):
     except UnboundLocalError:
         pass
     
-    print('Human Intervention is done, the script is done.')
+    print('Human Intervention is done, now onto updates.')
     
