@@ -2,6 +2,7 @@
 import pandas as pd
 from openpyxl import load_workbook
 import numpy as np
+from datetime import date
 
 # my libraries
 import updatelib as ud
@@ -11,10 +12,10 @@ import updatelib as ud
 
 def update_be(path, filename):
 
-    lf_df = pd.read_excel(r'./excel_results/LF.xlsx')
-    combined_df = pd.read_excel(r'./excel_results/Full_Analysis.xlsx')
-    happypath = pd.read_excel(r'./excel_results/HappyPath.xlsx')
-    addliens = pd.read_excel(r'./excel_results/NewLiens.xlsx')
+    lf_df = pd.read_excel(r'.\excel_results\\LF.xlsx')
+    combined_df = pd.read_excel(r'.\excel_results\\Test.xlsx')
+    happypath = pd.read_excel(r'.\excel_results\\HappyPath.xlsx')
+    addliens = pd.read_excel(r'.\excel_results\\NewLiens.xlsx')
     null_colid = pd.isnull(addliens['COL Id'])
     addlien_null_colid = addliens[null_colid]
 
@@ -63,35 +64,20 @@ def update_be(path, filename):
     ud.update_df(final_cms, combined_df, al_lienid, 'Lien holder', 'SLAM Lienholder','SLAM Lienholder','Lien Id', 'SLAM LienId')
     ud.update_dups(final_cms, combined_df, al_lienid,  'Amount', 'Question number',  'SLAM True FD Amount', 'SLAM Question #', 'Lien Id', 'SLAM LienId')
 
-    # Add Updated DF to original wb
-    wb = load_workbook(full_path)
-    ud.add_ws(full_path, wb, lf, 'LF', 0)
-    ud.add_ws(full_path, wb, final_cms, 'CMS', 8)
+    # Add Updated DF to original wb and remove original worksheet
+    ud.add_ws(full_path, lf, 'LF', 0,'Law Firm Representation')
+    ud.add_ws(full_path, final_cms, 'CMS', 8,'CMS_Third Party Liens')
+
 
     return print(f'Done with {filename} update')
 
 def col_2(path, filename):
+    today = date.today()
+    today_file = "log_file\\logfile-{0}.txt".format(str(today))
     # update this to create a log file based on the date its run
-    logg_file = open("logfile.txt", "a")
+    logg_file = open(today_file, "a")
     try:
         update_be(path, filename)
     except Exception as e:
         logg_file.write("Failed to update {0}: {1}\n".format(str(filename), str(e)))
-
-#path = r'F:\Mass Tort Cases\TVM\Claims Online\Updates\2019\2019-12-02\TBU\\'
-# filename = 'AWKO2018.xlsx'
-# update_be(path, filename)
-#filename = 'BA.xlsx'
-#update_be(path, filename)
-# filename3 = 'Burnett.xlsx'
-# update_be(path, filename)
-# filename4 = 'Mostyn2017.xlsx'
-# update_be(path, filename)
-
-
-    
-    
-
-
-
 
