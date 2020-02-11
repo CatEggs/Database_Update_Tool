@@ -5,27 +5,25 @@ import time
 import concurrent.futures
 from os import listdir
 
-#user_input = "2019-11-18" #input('Tell me the folder date (yyyy_mm_dd):')
 def main(user_input):
     start = time.perf_counter()
-    # define the file path
-    hi_path = r'F:\Mass Tort Cases\TVM\Claims Online\Updates\2019\\'+ user_input +'\Human_Intervention\\'
-    path = r'F:\Mass Tort Cases\TVM\Claims Online\Updates\2019\\'+ user_input +'\TBU\\'
+    hi_path = r'F:\Mass Tort Cases\TVM\Claims Online\Updates\2020\\'+ user_input +'\Human_Intervention\\'
+    path = r'F:\Mass Tort Cases\TVM\Claims Online\Updates\2020\\'+ user_input +'\TBU\\'
 
-    # put .xlsx files found in path to list
+    # # put .xlsx files found in path to list
     file_list = []
     for f in listdir(path):
         if f.endswith('.xlsx'):
             file_list.append(f)
 
-    # run SQL analysis
+    # # run SQL analysisCOL
     analysis.col_1()
     print('Analysis is done, now for human intervention results!')
     
-    # create the human intervention spreadsheets
+    # # create the human intervention spreadsheets
     hi_results.col_3(hi_path)
 
-    # run update script to update the OBE's with info from analysis
+    # # run update script to update the OBE's with info from analysis
     print(file_list)
     with concurrent.futures.ProcessPoolExecutor() as executor:
         for f in file_list:
@@ -37,4 +35,4 @@ def main(user_input):
 if __name__ == '__main__':
     user_input = input('Tell me the folder date (yyyy-mm-dd):')
     main(user_input)
-#main(user_input)
+
