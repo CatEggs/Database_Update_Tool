@@ -16,7 +16,7 @@ import pyodbc
 import config
 
 # SQL query
-from sql import lf_query, cms_query
+import sql
 
 # os
 import os, os.path
@@ -33,8 +33,11 @@ def col_1():
     metadata = MetaData(bind=engine)
 
     # run SQL queries for LF and CMS tabs
-    lf_df = pd.read_sql(lf_query, con = engine)
-    cms_df = pd.read_sql(cms_query, con = engine)
+    with engine.connect() as con:
+        con.execute(sql.update_se)
+        con.execute(sql.addlien_cms)
+    lf_df = pd.read_sql(sql.lf_query, con = engine)
+    cms_df = pd.read_sql(sql.cms_query, con = engine)
     print('SQL query done')
 	
     # merge dataframes to compare, rename columns
@@ -116,7 +119,7 @@ def col_1():
     	pass
     print('Done with df grouping')
 
-    ## Grab the ids in each df an put it in a list
+    # Grab the ids in each df an put it in a list
 
     cms_null_id = set(np.asarray(cms_null['Claim Ref #']))
     lf_ne_id = set(np.asarray(lf_ne['Claim Ref #']))
@@ -218,8 +221,8 @@ def col_1():
     	ud.list_intersections(lf_hp_id,cms_nc_id,hp_nc,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Happy Path')
     except UnboundLocalError:
     	pass
-	# Add Lien
 
+	# Add Lien
     try:
     	hp_al = lf_hp_id.intersection(cms_al_id)
     except UnboundLocalError:
@@ -261,7 +264,6 @@ def col_1():
     	ud.list_intersections(lf_nc_id,cms_null_id,nc_null,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'No change, no issue')
     except UnboundLocalError:
     	pass
-
 
 	# No change, no issue
     try:
@@ -491,7 +493,6 @@ def col_1():
     	ud.list_intersections(lf_hi3_id,cms_hi4,hi3_hi4,combined_df, 'Claim Ref #', 'LF_Label','CMS_Label', 'Human Intervention (fix this week) (if time)')
     except UnboundLocalError:
     	pass
-
 
 	# HI - Fix this week
     try:
